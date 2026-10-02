@@ -10,6 +10,7 @@ run submit business 1 einreichen
 run submit-readonly viewer 1 einreichen
 run rate gremium 1 r-q3
 run admin admin 1 r-q4
+run analysis admin 1 auswertung
 for t in einreichen anforderungen auswertung roadmap einstellungen r-q1; do run narrow admin 1 "$t"; done
 echo "SUMMARY e2e-läufe $((total-failed))/$total"
 exit $status
