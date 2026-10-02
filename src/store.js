@@ -21,7 +21,7 @@ const Store = (() => {
   function errorText(e) {
     switch (e && e.code) {
       case 'invalid_argument': return 'Speichern nicht möglich. Prüfen Sie, ob Sie die Freigabe «Contributor» haben, und versuchen Sie es erneut.';
-      case 'quota_exceeded': return 'Der Speicher des Portals ist voll. Bitte die Administration informieren.';
+      case 'quota_exceeded': return 'Der Speicher des Portals ist voll. Bitte den Product Owner informieren.';
       case 'resource_exhausted': return 'Zu viele Anfragen in kurzer Zeit. Bitte einen Moment warten und erneut versuchen.';
       case 'revoked': return 'Der Zugriff auf das Portal wurde entzogen. Bitte die Seite neu laden.';
       case 'not_granted': case 'capability_disabled': case 'capability_removed':
@@ -223,7 +223,7 @@ const Store = (() => {
       }
     }
     rrows.sort((a, b) => a.number - b.number);
-    const rcols = [['number', 'Nr.'], ['title', 'Titel'], ['person', 'Person'], ['committee', 'Im Gremium'],
+    const rcols = [['number', 'Nr.'], ['title', 'Titel'], ['person', 'Person'], ['committee', 'Im Release Board'],
       ...Logic.CRITERIA.map(k => [k, Logic.CRITERIA_LABEL[k]]), ['comment', 'Kommentar'], ['updatedAt', 'Geändert am']]
       .map(([key, label]) => ({ key, label }));
     const date = new Date().toISOString().slice(0, 10);

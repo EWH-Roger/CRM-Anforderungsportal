@@ -1,8 +1,8 @@
-/* Befunde aus dem Review: Administration (Testdaten, Rolle admin, Start #r-q3). */
+/* Befunde aus dem Review: Product Owner (Testdaten, Rolle admin, Start #r-q3). */
 const { $, $$, until, setVal, click, clickText, byText, toast, expect, wait } = E2E;
 const req = id => Store.state.requests.find(r => r.id === id);
 E2E.run([
-  ['Hängt eine Anforderung in «In Bewertung», kann die Administration sie als bewertet markieren', async () => {
+  ['Hängt eine Anforderung in «In Bewertung», kann der Product Owner sie als bewertet markieren', async () => {
     await Store.saveSettings({ ...Store.settings(), minRatings: 1 });
     await until(() => byText('button', 'Als bewertet markieren'), 'Knopf «Als bewertet markieren»');
     clickText('button', 'Als bewertet markieren');

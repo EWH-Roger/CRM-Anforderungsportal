@@ -1,4 +1,4 @@
-/* Befunde aus dem Review: Gremium (Testdaten, Rolle gremium, Start #r-q3). */
+/* Befunde aus dem Review: Release Board (Testdaten, Rolle gremium, Start #r-q3). */
 const { $, $$, until, setVal, clickText, toast, expect, wait } = E2E;
 E2E.run([
   ['Erste Bewertung ohne geladenen eigenen Snapshot löscht frühere Bewertungen nicht', async () => {

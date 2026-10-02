@@ -6,6 +6,6 @@ E2E.run([['Vor dem Laden keine Einrichtung, danach die echten Einstellungen', as
     expect(!byText('main h2', 'Portal einrichten'), 'Einrichtung vor dem Laden angeboten');
     await wait(50);
   }
-  await until(() => byText('main h2', 'Gremium'), 'echte Einstellungen');
+  await until(() => byText('main h2', 'Release Board'), 'echte Einstellungen');
   expect(!byText('main h2', 'Portal einrichten'), 'Einrichtung trotz vorhandener Einstellungen');
 }]], { waitLoaded: false });

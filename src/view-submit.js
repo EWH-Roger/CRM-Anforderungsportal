@@ -66,7 +66,7 @@ const SubmitView = (() => {
   }
 
   function stepWhat(d, set) {
-    return h('fieldset', { 'data-step': 0 }, h('legend', {}, STEPS[0]),
+    return h('fieldset', { 'data-step': 0 }, h('legend', { class: 'sr-only' }, STEPS[0]),
       UI.field('f-title', 'Titel', text('f-title', d.title, { maxlength: Logic.LIMITS.titleMax }), 'Kurz und konkret, z. B. «Offerten direkt aus dem CRM erstellen».'),
       h('div', { class: 'grid2' },
         UI.field('f-department', 'Abteilung', UI.select('f-department', withCurrent(set.departments, d.department), d.department, { placeholder: 'Bitte wählen' })),
@@ -76,20 +76,20 @@ const SubmitView = (() => {
   }
   function stepPain(d) {
     const p = d.pain;
-    return h('fieldset', { 'data-step': 1 }, h('legend', {}, STEPS[1]),
+    return h('fieldset', { 'data-step': 1 }, h('legend', { class: 'sr-only' }, STEPS[1]),
       UI.field('f-situation', 'Heutige Situation', area('f-situation', p.situation, 5),
         'Wie läuft es heute ab, und wo hakt es? Z. B. «Offerten entstehen in Word, die Preise werden von Hand aus Excel übertragen. Dabei passieren Fehler, und im CRM ist die Offerte nicht sichtbar.»'),
       h('p', { class: 'hint', id: 'f-situation-count' }),
       h('div', { class: 'grid3' },
         UI.field('f-frequency', 'Häufigkeit', UI.select('f-frequency', Logic.FREQUENCIES, p.frequency, { placeholder: 'Bitte wählen' })),
-        UI.field('f-hours', 'Zeitaufwand in h pro Woche und Person', text('f-hours', p.hoursPerWeek, { inputmode: 'decimal', placeholder: 'z. B. 1,5' })),
+        UI.field('f-hours', 'Aufwand pro Person (h/Woche)', text('f-hours', p.hoursPerWeek, { inputmode: 'decimal', placeholder: 'z. B. 1,5' })),
         UI.field('f-persons', 'Betroffene Personen', text('f-persons', p.persons, { inputmode: 'numeric', placeholder: 'z. B. 6' }))),
       h('div', { class: 'field' }, h('span', { class: 'lbl' }, 'Folgen (optional)'),
         h('div', { class: 'checks' }, ...Logic.CONSEQUENCES.map((c, i) => check('cons', c, p.consequences.includes(c), i)))));
   }
   function stepGain(d) {
     const g = d.gain;
-    return h('fieldset', { 'data-step': 2 }, h('legend', {}, STEPS[2]),
+    return h('fieldset', { 'data-step': 2 }, h('legend', { class: 'sr-only' }, STEPS[2]),
       UI.field('f-gainDept', 'Nutzen für die Abteilung', area('f-gainDept', g.department, 4),
         'Was wird für Ihre Abteilung besser? Z. B. «Pro Offerte rund 20 Minuten weniger Aufwand, keine Übertragungsfehler mehr.»'),
       h('p', { class: 'hint', id: 'f-gainDept-count' }),
@@ -111,7 +111,7 @@ const SubmitView = (() => {
         h('input', { type: 'text', id: 'f-rep-sys-' + i, value: r.system, list: 'dl-systems', placeholder: 'z. B. Excel-Liste Kundenanlässe', 'aria-label': `Ablösbares System ${i + 1}` }),
         h('input', { type: 'text', id: 'f-rep-purpose-' + i, value: r.purpose, placeholder: 'Was leistet es heute?', 'aria-label': `Heutige Aufgabe von System ${i + 1}` })));
     }
-    return h('fieldset', { 'data-step': 3 }, h('legend', {}, STEPS[3]),
+    return h('fieldset', { 'data-step': 3 }, h('legend', { class: 'sr-only' }, STEPS[3]),
       h('div', { class: 'field' }, h('span', { class: 'lbl' }, 'Betroffene Systeme (optional)'),
         h('p', { class: 'hint' }, 'Mit welchen Systemen hängt die Anforderung zusammen, etwa über Schnittstellen oder Datenquellen?'),
         known.length ? h('div', { class: 'checks' }, ...known.map((s, i) => check('sys', s, sy.affected.includes(s), i))) : null,
@@ -186,14 +186,14 @@ const SubmitView = (() => {
     const d = done;
     return h('section', { class: 'panel narrow' },
       h('h2', {}, d.edited ? `Änderungen an #${d.number} gespeichert` : `Anforderung #${d.number} eingereicht`),
-      h('p', { class: 'note' }, d.edited ? 'Die Administration sieht die aktualisierten Angaben.' : 'Danke. Den Status verfolgen Sie unter «Anforderungen». Rückfragen erscheinen ebenfalls dort.'),
+      h('p', { class: 'note' }, d.edited ? 'Der Product Owner sieht die aktualisierten Angaben.' : 'Danke. Den Status verfolgen Sie unter «Anforderungen». Rückfragen erscheinen ebenfalls dort.'),
       h('div', { class: 'row', style: 'margin-top:16px' },
         h('button', { class: 'btn', type: 'button', onclick: () => { done = null; RequestsView.select(d.id); App.go('anforderungen'); } }, 'Anforderung ansehen'),
         h('button', { class: 'btn ghost', type: 'button', onclick: () => { done = null; App.render(); } }, 'Weitere Anforderung einreichen')));
   }
 
   function render(root, st) {
-    if (done) { root.append(donePanel()); return; }
+    if (done) { root.append(h('div', { class: 'submit-layout' }, donePanel(), aside(st))); return; }
     const set = Store.settings();
     const d = draft || empty();
     const blocked = !st.db ? 'Die Datenbank ist nicht verfügbar, deshalb kann nichts eingereicht werden.'
@@ -220,9 +220,34 @@ const SubmitView = (() => {
     form.addEventListener('change', sync);
     form.addEventListener('submit', e => { e.preventDefault(); submit(form); });
     if (blocked) form.querySelectorAll('fieldset').forEach(fs => { fs.disabled = true; });
-    root.append(form);
+    root.append(h('div', { class: 'submit-layout' }, form, aside(st)));
     showStep(form);
     updateQuality(form);
+  }
+
+  // Hilfespalte: Tipps, Ablauf und die eigenen Einreichungen.
+  function aside(st) {
+    const mine = st.me.id ? st.requests.filter(r => r.submittedBy === st.me.id).sort((a, b) => b.number - a.number) : [];
+    const open = r => { RequestsView.select(r.id); App.go('anforderungen'); };
+    return h('aside', { class: 'submit-aside stack' },
+      h('section', { class: 'panel' }, h('h2', {}, 'So wird Ihre Anforderung gut'),
+        h('ul', { class: 'tips' },
+          h('li', {}, 'Beschreiben Sie das Problem, nicht die Lösung: Was läuft heute schief, wie oft, und wer ist betroffen?'),
+          h('li', {}, 'Schätzen Sie den Zeitaufwand pro Woche und Person. Grobe Werte genügen.'),
+          h('li', {}, 'Formulieren Sie ein messbares Erfolgskriterium, zum Beispiel eine kürzere Durchlaufzeit oder weniger Fehler.'),
+          h('li', {}, 'Nennen Sie Excel-Listen oder Altsysteme, die wegfallen könnten.'))),
+      h('section', { class: 'panel' }, h('h2', {}, 'Was danach passiert'),
+        h('ol', { class: 'flow' },
+          h('li', {}, UI.pill('eingereicht'), h('span', {}, 'Der Product Owner prüft die Angaben und stellt bei Bedarf Rückfragen.')),
+          h('li', {}, UI.pill('bewertung'), h('span', {}, 'Das Release Board bewertet Nutzen und Aufwand.')),
+          h('li', {}, UI.pill('bewertet'), h('span', {}, 'Die Anforderung kommt in den Backlog der Roadmap.')),
+          h('li', {}, UI.pill('eingeplant'), h('span', {}, 'Sie ist einem Release zugeordnet und wird umgesetzt.')))),
+      st.me.id ? h('section', { class: 'panel' }, h('h2', {}, 'Meine Anforderungen'),
+        mine.length
+          ? h('ul', { class: 'mine' }, ...mine.slice(0, 5).map(r => h('li', {},
+              h('button', { class: 'linkbtn', type: 'button', onclick: () => open(r) }, `#${r.number} ${r.title}`), UI.pill(r.status))))
+          : h('p', { class: 'hint' }, 'Sie haben noch keine Anforderung eingereicht.'),
+        mine.length > 5 ? h('p', { class: 'hint', style: 'margin-top:8px' }, `Alle ${mine.length} finden Sie unter «Anforderungen» mit dem Filter «Nur meine».`) : null) : null);
   }
 
   return { render, edit };

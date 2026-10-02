@@ -19,7 +19,7 @@
   function renderWho(s) {
     const el = document.getElementById('who');
     if (!s.me.id) { el.replaceChildren(); return; }
-    const roles = [s.isAdmin && 'Administration', Store.isCommittee() && 'Gremium'].filter(Boolean).join(' · ') || (s.canWrite === false ? 'Lesezugriff' : 'Einreichende');
+    const roles = [s.isAdmin && 'Product Owner', Store.isCommittee() && 'Release Board'].filter(Boolean).join(' · ') || (s.canWrite === false ? 'Lesezugriff' : 'Einreichende');
     el.replaceChildren(UI.h('strong', {}, s.me.name || 'Angemeldet'), ' · ' + roles);
   }
   function renderBanner(s) {
@@ -28,11 +28,11 @@
     if (s.error) msg = s.error;
     else if (s.ready && !s.me.id) msg = 'Bitte melden Sie sich in claude.ai an, um Anforderungen einzureichen und zu bewerten.';
     else if (s.ready && s.canWrite === false) {
-      msg = 'Sie haben Lesezugriff. Zum Einreichen und Bewerten braucht es die Freigabe «Contributor». Bitte bei der Administration melden.';
+      msg = 'Sie haben Lesezugriff. Zum Einreichen und Bewerten braucht es die Freigabe «Contributor». Bitte beim Product Owner melden.';
     } else if (s.ready && s.db && s.loaded.settings && !s.settings) {
       msg = s.isAdmin
         ? 'Das Portal ist noch nicht eingerichtet. Bitte unter «Einstellungen» die Wertelisten prüfen und speichern.'
-        : 'Das Portal wird gerade eingerichtet. Einreichen ist möglich, sobald die Administration die Einrichtung abgeschlossen hat.';
+        : 'Das Portal wird gerade eingerichtet. Einreichen ist möglich, sobald der Product Owner die Einrichtung abgeschlossen hat.';
     }
     el.hidden = !msg; el.textContent = msg || '';
   }
@@ -55,6 +55,27 @@
     if (a.dataset.tab === 'anforderungen') RequestsView.select(null);
     go(a.dataset.tab);
   });
+  // Farbschema: System, Hell oder Dunkel; die Wahl gilt pro Person und Browser.
+  const THEME_KEY = 'portal-theme';
+  function applyTheme(choice) {
+    const root = document.documentElement;
+    if (choice === 'light' || choice === 'dark') root.setAttribute('data-portal-theme', choice);
+    else root.removeAttribute('data-portal-theme');
+    for (const b of document.querySelectorAll('header .theme button')) {
+      b.setAttribute('aria-pressed', String(b.dataset.themeChoice === (choice === 'light' || choice === 'dark' ? choice : 'system')));
+    }
+  }
+  document.querySelector('header .theme').addEventListener('click', e => {
+    const b = e.target.closest('button[data-theme-choice]');
+    if (!b) return;
+    const choice = b.dataset.themeChoice;
+    try { if (choice === 'system') localStorage.removeItem(THEME_KEY); else localStorage.setItem(THEME_KEY, choice); } catch (err) { /* Speicher gesperrt: Wahl gilt nur bis zum Neuladen */ }
+    applyTheme(choice);
+  });
+  let storedTheme = null;
+  try { storedTheme = localStorage.getItem(THEME_KEY); } catch (err) { storedTheme = null; }
+  applyTheme(storedTheme);
+
   App.render = render; App.go = go;
   tab = fromHash();
   Store.subscribe(render);
