@@ -133,10 +133,69 @@ const Logic = (() => {
     return Math.round(h * n * weeksPerYear);
   }
 
+  // ---- Roadmap ----
+  function suggestRoadmap(backlog, releases) {
+    const open = releases.filter(r => r.status === 'offen').slice().sort((a, b) => a.order - b.order)
+      .map(r => ({ id: r.id, free: r.capacity - (r.used || 0) }));
+    const items = backlog.filter(b => Number.isFinite(b.points) && b.points >= 0).slice()
+      .sort((a, b) => (b.score - a.score) || (a.number - b.number));
+    const out = [];
+    for (const it of items) {
+      const rel = open.find(r => r.free >= it.points);
+      if (rel) { rel.free -= it.points; out.push({ requestId: it.id, releaseId: rel.id }); }
+    }
+    return out;
+  }
+  function releaseUsage(releaseId, items) {
+    return items.filter(i => i.releaseId === releaseId).reduce((sum, i) => sum + (Number.isFinite(i.points) ? i.points : 0), 0);
+  }
+
+  // ---- Kennzahlen ----
+  function nextNumber(requests) { return requests.reduce((m, r) => Math.max(m, Number(r.number) || 0), 0) + 1; }
+  function countBy(items, keyFn) {
+    const m = new Map();
+    for (const it of items) {
+      const keys = keyFn(it);
+      for (const k of [].concat(keys == null ? [] : keys)) {
+        if (k == null || k === '') continue;
+        m.set(k, (m.get(k) || 0) + 1);
+      }
+    }
+    return [...m.entries()].map(([key, count]) => ({ key, count }))
+      .sort((a, b) => (b.count - a.count) || String(a.key).localeCompare(String(b.key), 'de'));
+  }
+  function leadTimeDays(history) {
+    const s = (history || []).find(x => x.status === 'eingereicht');
+    const b = (history || []).find(x => x.status === 'bewertet');
+    if (!s || !b) return null;
+    return Math.max(0, (Date.parse(b.at) - Date.parse(s.at)) / 86400000);
+  }
+  function average(nums) {
+    const v = nums.filter(Number.isFinite);
+    return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null;
+  }
+  function replacementPotential(requests) {
+    return countBy(requests, r => [...new Set(((r.systems && r.systems.replaceable) || [])
+      .map(x => String(x.system || '').trim()).filter(Boolean))]);
+  }
+
+  // ---- CSV ----
+  function csvCell(v) {
+    if (v === null || v === undefined) return '';
+    let s = String(v);
+    if (typeof v === 'string' && /^[=+\-@]/.test(s)) s = "'" + s;
+    return /[";\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+  function toCsv(columns, rows) {
+    const lines = [columns.map(c => csvCell(c.label)).join(';'), ...rows.map(r => columns.map(c => csvCell(r[c.key])).join(';'))];
+    return '﻿' + lines.join('\r\n');
+  }
+
   return {
     STATUS_LABEL, STATUSES, RESULTS_VISIBLE, canTransition, manualTargets, needsReason, withStatus,
     BENEFIT_KEYS, CRITERIA, CRITERIA_LABEL, QUADRANT_LABEL, isValidRating, committeeRatings, evaluate,
     benefitIndex, score, quadrant, effortPoints, shouldMarkRated,
     FREQUENCIES, CONSEQUENCES, LIMITS, parseNum, validateSubmission, savingsHoursPerYear,
+    suggestRoadmap, releaseUsage, nextNumber, countBy, leadTimeDays, average, replacementPotential, toCsv,
   };
 })();
