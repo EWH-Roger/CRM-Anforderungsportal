@@ -6,6 +6,9 @@ Das Format folgt [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), die V
 
 ## [Unveröffentlicht]
 
+### Hinzugefügt
+- Übergabedokument [uebergabe.md](uebergabe.md) mit Stand, Arbeitsweise, Entscheiden und offenen Punkten.
+
 ## [0.3.1] - 2026-10-02
 
 ### Behoben

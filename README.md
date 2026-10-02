@@ -8,6 +8,7 @@ Das Portal ist eine einzelne HTML-Seite und läuft als claude.ai-Artifact. Die D
 - **Spezifikation:** [docs/superpowers/specs/2026-10-02-anforderungsportal-design.md](docs/superpowers/specs/2026-10-02-anforderungsportal-design.md)
 - **Umsetzungsplan:** [docs/superpowers/plans/2026-10-02-anforderungsportal.md](docs/superpowers/plans/2026-10-02-anforderungsportal.md)
 - **Änderungen:** [CHANGELOG.md](CHANGELOG.md)
+- **Übergabe:** [uebergabe.md](uebergabe.md) (Stand, Arbeitsweise, offene Punkte)
 
 ## Funktionen
 
