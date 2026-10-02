@@ -13,13 +13,14 @@
   --step--1: 0.8125rem; --step-0: 0.9375rem; --step-1: 1.125rem; --step-2: 1.5rem;
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
+  :root:not([data-theme="light"]):not([data-portal-theme="light"]) {
     --bg: #0A1622; --surface: #102236; --surface-2: #17304A; --ink: #E2ECF6; --muted: #9AB3C9; --line: #25405C;
     --accent: #5BADF0; --accent-ink: #04121F; --focus: #F7C24A; --ok: #5CC28E; --warn: #E3A94B; --bad: #F08A80;
     color-scheme: dark;
   }
 }
-:root[data-theme="dark"] {
+/* Die Wahl im Portal (data-portal-theme) geht der Vorgabe von claude.ai (data-theme) vor. */
+:root[data-theme="dark"]:not([data-portal-theme="light"]), :root[data-portal-theme="dark"] {
   --bg: #0A1622; --surface: #102236; --surface-2: #17304A; --ink: #E2ECF6; --muted: #9AB3C9; --line: #25405C;
   --accent: #5BADF0; --accent-ink: #04121F; --focus: #F7C24A; --ok: #5CC28E; --warn: #E3A94B; --bad: #F08A80;
   color-scheme: dark;
@@ -33,6 +34,12 @@ h1 { font-size: var(--step-2); font-weight: 600; margin: 0; letter-spacing: -0.0
 .sub { margin: 2px 0 0; color: var(--muted); }
 .who { color: var(--muted); font-size: var(--step--1); }
 .who strong { color: var(--ink); font-weight: 500; }
+.top-right { display: grid; justify-items: end; gap: 6px; }
+.theme { display: inline-flex; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+.theme button { font: inherit; font-size: var(--step--1); background: transparent; color: var(--muted); border: 0; padding: 3px 10px; cursor: pointer; }
+.theme button + button { border-left: 1px solid var(--line); }
+.theme button[aria-pressed="true"] { background: var(--surface-2); color: var(--ink); font-weight: 500; }
+@media (max-width: 560px) { .top-right { justify-items: start; } }
 nav.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; position: sticky; top: env(safe-area-inset-top, 0px); background: var(--bg); z-index: 5; }
 nav.tabs a { padding: 10px 14px; color: var(--muted); text-decoration: none; font-weight: 500; border-bottom: 3px solid transparent; white-space: nowrap; }
 nav.tabs a:hover { color: var(--ink); }
@@ -178,7 +185,14 @@ dialog::backdrop { background: rgb(0 20 40 / 0.45); }
       <h1>CRM-Anforderungsportal</h1>
       <p class="sub">Anforderungen an das CRM einreichen, bewerten und in Releases einplanen</p>
     </div>
-    <div id="who" class="who"></div>
+    <div class="top-right">
+      <div id="who" class="who"></div>
+      <div class="theme" role="group" aria-label="Darstellung">
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Hell</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dunkel</button>
+      </div>
+    </div>
   </header>
   <nav class="tabs" id="tabs" aria-label="Bereiche">
     <a href="#einreichen" data-tab="einreichen">Einreichen</a>

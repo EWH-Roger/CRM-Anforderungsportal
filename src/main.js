@@ -55,6 +55,27 @@
     if (a.dataset.tab === 'anforderungen') RequestsView.select(null);
     go(a.dataset.tab);
   });
+  // Farbschema: System, Hell oder Dunkel; die Wahl gilt pro Person und Browser.
+  const THEME_KEY = 'portal-theme';
+  function applyTheme(choice) {
+    const root = document.documentElement;
+    if (choice === 'light' || choice === 'dark') root.setAttribute('data-portal-theme', choice);
+    else root.removeAttribute('data-portal-theme');
+    for (const b of document.querySelectorAll('header .theme button')) {
+      b.setAttribute('aria-pressed', String(b.dataset.themeChoice === (choice === 'light' || choice === 'dark' ? choice : 'system')));
+    }
+  }
+  document.querySelector('header .theme').addEventListener('click', e => {
+    const b = e.target.closest('button[data-theme-choice]');
+    if (!b) return;
+    const choice = b.dataset.themeChoice;
+    try { if (choice === 'system') localStorage.removeItem(THEME_KEY); else localStorage.setItem(THEME_KEY, choice); } catch (err) { /* Speicher gesperrt: Wahl gilt nur bis zum Neuladen */ }
+    applyTheme(choice);
+  });
+  let storedTheme = null;
+  try { storedTheme = localStorage.getItem(THEME_KEY); } catch (err) { storedTheme = null; }
+  applyTheme(storedTheme);
+
   App.render = render; App.go = go;
   tab = fromHash();
   Store.subscribe(render);

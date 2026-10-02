@@ -17,6 +17,7 @@ Das Portal ist eine einzelne HTML-Seite und läuft als claude.ai-Artifact. Die D
 | Anforderungen | Liste mit Suche und Filtern. Die Detailansicht zeigt den Statusverlauf, Rückfragen und die Bewertung durch das Release Board. |
 | Auswertung | Kennzahlen, Nutzen/Aufwand-Matrix, Rangliste nach Score, Verteilungen und Ablösepotenzial der genannten Systeme. |
 | Roadmap | Releases mit Kapazität in Aufwandspunkten. Zuordnung per Drag & Drop oder Auswahl, automatischer Vorschlag nach Score, Auslieferung eines Release. |
+| Darstellung | Umschalter in der Kopfzeile: «System», «Hell» oder «Dunkel». Die Wahl gilt pro Person und Browser. |
 | Einstellungen | Ersteinrichtung, Gewichte der Kriterien, Wertelisten, Release Board, Releases und CSV-Export. Nur für den Product Owner. |
 
 ## Rollen und Freigaben
