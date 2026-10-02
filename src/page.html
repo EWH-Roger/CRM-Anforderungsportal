@@ -68,6 +68,9 @@ h3 { font-size: var(--step-0); font-weight: 600; margin: 0 0 8px; }
 .spread h2 { margin: 0; font-size: var(--step-1); }
 .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 16px; }
 .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)); gap: 12px; align-items: start; }
+/* Beschriftung, Eingabe und Fehlermeldung teilen sich die Zeilen, damit die Felder auf einer Höhe stehen. */
+.grid3 > .field { grid-row: span 3; display: grid; grid-template-rows: subgrid; row-gap: 4px; align-items: start; }
+.grid3 > .field > label { align-self: end; }
 .field { display: grid; gap: 4px; min-width: 0; }
 .field > label, .lbl { font-weight: 500; }
 .hint { margin: 0; color: var(--muted); font-size: var(--step--1); }
@@ -77,6 +80,7 @@ input[type="text"], input[type="search"], input[type="date"], select, textarea {
   font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 8px 10px; width: 100%; min-width: 0;
 }
 textarea { resize: vertical; min-height: 4.5em; }
+input[type="text"], input[type="search"], input[type="date"], select { height: 2.6rem; }
 [aria-invalid="true"] { border-color: var(--bad) !important; }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 .checks { display: flex; flex-wrap: wrap; gap: 6px 18px; }

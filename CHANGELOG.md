@@ -6,6 +6,14 @@ Das Format folgt [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), die V
 
 ## [Unveröffentlicht]
 
+## [0.3.1] - 2026-10-02
+
+### Behoben
+- **Einreichen, Schritt «Pain»:** Häufigkeit, Zeitaufwand und betroffene Personen stehen auf einer Höhe, auch wenn eine Beschriftung umbricht. Textfelder und Auswahllisten sind gleich hoch.
+
+### Geändert
+- Die Beschriftung «Zeitaufwand in h pro Woche und Person» heisst kürzer «Aufwand pro Person (h/Woche)».
+
 ## [0.3.0] - 2026-10-02
 
 ### Hinzugefügt
@@ -74,7 +82,8 @@ Erste Version für den Pilot, veröffentlicht als privates claude.ai-Artifact.
 - Eine Anforderung liess sich bearbeiten, nachdem sie bereits in Bewertung war. Statuswechsel mit veraltetem Stand konnten Einträge im Verlauf verlieren.
 - Lesende und nicht angemeldete Personen konnten Formularfelder ausfüllen.
 
-[Unveröffentlicht]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.3.0...HEAD
+[Unveröffentlicht]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.1.0...v0.2.0

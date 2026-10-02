@@ -82,7 +82,7 @@ const SubmitView = (() => {
       h('p', { class: 'hint', id: 'f-situation-count' }),
       h('div', { class: 'grid3' },
         UI.field('f-frequency', 'Häufigkeit', UI.select('f-frequency', Logic.FREQUENCIES, p.frequency, { placeholder: 'Bitte wählen' })),
-        UI.field('f-hours', 'Zeitaufwand in h pro Woche und Person', text('f-hours', p.hoursPerWeek, { inputmode: 'decimal', placeholder: 'z. B. 1,5' })),
+        UI.field('f-hours', 'Aufwand pro Person (h/Woche)', text('f-hours', p.hoursPerWeek, { inputmode: 'decimal', placeholder: 'z. B. 1,5' })),
         UI.field('f-persons', 'Betroffene Personen', text('f-persons', p.persons, { inputmode: 'numeric', placeholder: 'z. B. 6' }))),
       h('div', { class: 'field' }, h('span', { class: 'lbl' }, 'Folgen (optional)'),
         h('div', { class: 'checks' }, ...Logic.CONSEQUENCES.map((c, i) => check('cons', c, p.consequences.includes(c), i)))));
