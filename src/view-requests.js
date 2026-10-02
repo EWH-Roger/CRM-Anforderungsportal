@@ -130,7 +130,7 @@ const RequestsView = (() => {
         r.decisionReason ? h('p', { style: 'margin:12px 0 0' }, h('strong', {}, 'Begründung: '), r.decisionReason) : null),
       canEditReq ? h('section', { class: 'panel' },
         h('p', { class: 'hint', style: 'margin-bottom:8px' }, r.status === 'klaerung'
-          ? 'Es gibt eine Rückfrage. Ergänzen Sie die Angaben, danach geht die Anforderung zurück an die Administration.'
+          ? 'Es gibt eine Rückfrage. Ergänzen Sie die Angaben, danach geht die Anforderung zurück an den Product Owner.'
           : 'Sie können die Angaben ändern, solange die Anforderung noch nicht in Bewertung ist.'),
         h('button', { class: 'btn ghost', type: 'button', onclick: () => { SubmitView.edit(r); App.go('einreichen'); } }, 'Angaben bearbeiten')) : null,
       st.isAdmin ? adminSection(r) : null,
@@ -148,7 +148,7 @@ const RequestsView = (() => {
     const openForRating = ['bewertung', 'bewertet'].includes(r.status);
     if (!(member && openForRating) && !(results && (st.isAdmin || member))) return null;
     const mine = Store.myRating(r.id);
-    const sec = h('section', { class: 'panel' }, h('h3', {}, 'Bewertung durch das Gremium'));
+    const sec = h('section', { class: 'panel' }, h('h3', {}, 'Bewertung durch das Release Board'));
     if (member && openForRating && st.canWrite !== false) {
       const ids = [...Logic.CRITERIA.map(k => 'rt-' + k), 'rt-comment'];
       const err = h('p', { class: 'err', hidden: true });
@@ -208,7 +208,7 @@ const RequestsView = (() => {
   }
 
   function adminSection(r) {
-    const sec = h('section', { class: 'panel' }, h('h3', {}, 'Administration'));
+    const sec = h('section', { class: 'panel' }, h('h3', {}, 'Product Owner'));
     const targets = Logic.manualTargets(r.status);
     if (targets.length) {
       sec.append(h('div', { class: 'row' }, ...targets.map(to => {

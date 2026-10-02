@@ -1,7 +1,7 @@
-/* Ansicht «Einstellungen»: nur für die Administration. */
+/* Ansicht «Einstellungen»: nur für den Product Owner. */
 const SettingsView = (() => {
   const { h } = UI;
-  // Vorschläge für die Ersteinrichtung; die Administration passt sie an.
+  // Vorschläge für die Ersteinrichtung; der Product Owner passt sie an.
   const SUGGESTED = {
     departments: ['Verkauf', 'Kundendienst', 'Marketing', 'Finanzen', 'Geschäftsleitung'],
     crmAreas: ['Kontakte und Firmen', 'Verträge', 'Kampagnen', 'Aktivitäten und Aufgaben', 'Reporting', 'Schnittstellen'],
@@ -18,7 +18,7 @@ const SettingsView = (() => {
     root.append(h('div', { class: 'stack' },
       isNew ? h('section', { class: 'panel', style: 'border-color:var(--accent)' },
         h('h2', {}, 'Portal einrichten'),
-        h('p', { class: 'note' }, 'Das Portal hat noch keine Einstellungen. Die Felder enthalten Vorschläge. Passen Sie die Listen an Ihre Organisation an und speichern Sie. Danach können Anforderungen eingereicht werden. Sie selbst werden als erstes Gremium-Mitglied eingetragen.')) : null,
+        h('p', { class: 'note' }, 'Das Portal hat noch keine Einstellungen. Die Felder enthalten Vorschläge. Passen Sie die Listen an Ihre Organisation an und speichern Sie. Danach können Anforderungen eingereicht werden. Sie selbst werden als erstes Mitglied des Release Boards eingetragen.')) : null,
       generalForm(base, isNew),
       isNew ? null : committeePanel(st, cur),
       isNew ? null : releasesPanel(st),
@@ -84,7 +84,7 @@ const SettingsView = (() => {
     search.addEventListener('input', run);
     search.addEventListener('focus', run);
     return h('section', { class: 'panel' },
-      h('h2', {}, 'Gremium'),
+      h('h2', {}, 'Release Board'),
       h('p', { class: 'note', style: 'margin-bottom:12px' }, 'Nur Bewertungen dieser Personen zählen für Durchschnitt und Score. Mitglieder brauchen beim Teilen des Portals mindestens die Freigabe «Contributor».'),
       cur.committee.length
         ? h('ul', { class: 'posts' }, ...cur.committee.map(id => h('li', { class: 'row', style: 'justify-content:space-between' }, UI.nameSpan(id),

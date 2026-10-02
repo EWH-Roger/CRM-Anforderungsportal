@@ -68,7 +68,7 @@
       doc: id => docRef(path + '/' + (id || newId())),
       add: async d => { const r = docRef(path + '/' + newId()); await r.set(d); return r; } };
   }
-  const PEOPLE = { u_admin: 'Test Administration', u_gremium: 'Test Gremium', u_business: 'Test Business', u_viewer: 'Test Lesend' };
+  const PEOPLE = { u_admin: 'Test Product Owner', u_gremium: 'Test Release Board', u_business: 'Test Business', u_viewer: 'Test Lesend' };
   const prof = id => ({ id, name: PEOPLE[id] || '', avatarUrl: '', color: '#0B6CB8', email: null, isMe: id === 'u_' + role, guest: false });
   const me = role === 'anonym'
     ? { id: null, name: '', avatarUrl: '', color: '#888', email: null, isOwner: false, canEdit: false }

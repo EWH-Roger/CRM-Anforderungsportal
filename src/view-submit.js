@@ -186,7 +186,7 @@ const SubmitView = (() => {
     const d = done;
     return h('section', { class: 'panel narrow' },
       h('h2', {}, d.edited ? `Änderungen an #${d.number} gespeichert` : `Anforderung #${d.number} eingereicht`),
-      h('p', { class: 'note' }, d.edited ? 'Die Administration sieht die aktualisierten Angaben.' : 'Danke. Den Status verfolgen Sie unter «Anforderungen». Rückfragen erscheinen ebenfalls dort.'),
+      h('p', { class: 'note' }, d.edited ? 'Der Product Owner sieht die aktualisierten Angaben.' : 'Danke. Den Status verfolgen Sie unter «Anforderungen». Rückfragen erscheinen ebenfalls dort.'),
       h('div', { class: 'row', style: 'margin-top:16px' },
         h('button', { class: 'btn', type: 'button', onclick: () => { done = null; RequestsView.select(d.id); App.go('anforderungen'); } }, 'Anforderung ansehen'),
         h('button', { class: 'btn ghost', type: 'button', onclick: () => { done = null; App.render(); } }, 'Weitere Anforderung einreichen')));
@@ -238,8 +238,8 @@ const SubmitView = (() => {
           h('li', {}, 'Nennen Sie Excel-Listen oder Altsysteme, die wegfallen könnten.'))),
       h('section', { class: 'panel' }, h('h2', {}, 'Was danach passiert'),
         h('ol', { class: 'flow' },
-          h('li', {}, UI.pill('eingereicht'), h('span', {}, 'Die Administration prüft die Angaben und stellt bei Bedarf Rückfragen.')),
-          h('li', {}, UI.pill('bewertung'), h('span', {}, 'Das Gremium bewertet Nutzen und Aufwand.')),
+          h('li', {}, UI.pill('eingereicht'), h('span', {}, 'Der Product Owner prüft die Angaben und stellt bei Bedarf Rückfragen.')),
+          h('li', {}, UI.pill('bewertung'), h('span', {}, 'Das Release Board bewertet Nutzen und Aufwand.')),
           h('li', {}, UI.pill('bewertet'), h('span', {}, 'Die Anforderung kommt in den Backlog der Roadmap.')),
           h('li', {}, UI.pill('eingeplant'), h('span', {}, 'Sie ist einem Release zugeordnet und wird umgesetzt.')))),
       st.me.id ? h('section', { class: 'panel' }, h('h2', {}, 'Meine Anforderungen'),

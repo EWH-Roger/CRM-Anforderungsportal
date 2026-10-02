@@ -5,7 +5,7 @@ E2E.run([
     await until(() => byText('main h2', 'Portal einrichten'), 'Portal einrichten');
     clickText('button', 'Einrichtung speichern');
     await until(() => toast().includes('Einstellungen gespeichert.'), 'Toast');
-    await until(() => byText('main h2', 'Gremium'), 'Panel Gremium');
+    await until(() => byText('main h2', 'Release Board'), 'Panel Release Board');
   }],
   ['Gewicht 0,7 wird abgelehnt', async () => {
     setVal('#set-w-nutzen', '0,7');
@@ -20,11 +20,11 @@ E2E.run([
     await until(() => $$('input[id^="rel-name-"]').some(i => i.id !== 'rel-name-new' && i.value === '2027.1'), 'neue Release-Zeile');
     await until(() => $('#rel-name-new').value === '', 'Neu-Zeile leer');
   }],
-  ['Person über die Suche ins Gremium aufnehmen', async () => {
-    setVal('#cm-search', 'Gremium');
-    await until(() => byText('#cm-results li', 'Test Gremium'), 'Suchtreffer');
-    click(byText('#cm-results li', 'Test Gremium').querySelector('button'));
+  ['Person über die Suche ins Release Board aufnehmen', async () => {
+    setVal('#cm-search', 'Release Board');
+    await until(() => byText('#cm-results li', 'Test Release Board'), 'Suchtreffer');
+    click(byText('#cm-results li', 'Test Release Board').querySelector('button'));
     await until(() => Store.settings().committee.includes('u_gremium'), 'Mitglied gespeichert');
-    await until(() => $$('main .posts li').some(li => li.textContent.includes('Test Gremium')), 'Liste zeigt Mitglied');
+    await until(() => $$('main .posts li').some(li => li.textContent.includes('Test Release Board')), 'Liste zeigt Mitglied');
   }],
 ]);

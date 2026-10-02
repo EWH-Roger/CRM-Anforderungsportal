@@ -6,6 +6,11 @@ Das Format folgt [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), die V
 
 ## [Unveröffentlicht]
 
+## [0.2.1] - 2026-10-02
+
+### Geändert
+- Rollenbegriffe: Aus «Gremium» wird «Release Board», aus «Administration» wird «Product Owner». Das gilt für die ganze Oberfläche, den CSV-Export und die README. Die Berechtigungen bleiben unverändert.
+
 ## [0.2.0] - 2026-10-02
 
 ### Hinzugefügt
@@ -61,6 +66,7 @@ Erste Version für den Pilot, veröffentlicht als privates claude.ai-Artifact.
 - Eine Anforderung liess sich bearbeiten, nachdem sie bereits in Bewertung war. Statuswechsel mit veraltetem Stand konnten Einträge im Verlauf verlieren.
 - Lesende und nicht angemeldete Personen konnten Formularfelder ausfüllen.
 
-[Unveröffentlicht]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.2.0...HEAD
+[Unveröffentlicht]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/EWH-Roger/CRM-Anforderungsportal/releases/tag/v0.1.0

@@ -47,7 +47,7 @@ test('withStatus: Reaktivieren löscht die Begründung', () => {
 // ---- Bewertung ----
 const SET = { committee: ['a', 'b'], weights: { nutzen: 1, betroffene: 1, dringlichkeit: 1, fit: 1 }, minRatings: 2, weeksPerYear: 46 };
 const RT = (n, b, d, f, a) => ({ nutzen: n, betroffene: b, dringlichkeit: d, fit: f, aufwand: a });
-test('evaluate: Durchschnitt nur über aktuelle Gremium-Mitglieder', () => {
+test('evaluate: Durchschnitt nur über aktuelle Mitglieder des Release Boards', () => {
   const docs = { a: { byRequest: { x: RT(5, 5, 5, 5, 2) } }, b: { byRequest: { x: RT(3, 3, 3, 3, 4) } }, c: { byRequest: { x: RT(1, 1, 1, 1, 5) } } };
   const ev = Logic.evaluate('x', docs, SET);
   eq(ev.count, 2); eq(ev.avg.nutzen, 4); eq(ev.effort, 3); eq(ev.benefit, 4); eq(ev.score, 1.33); eq(ev.quadrant, 'gross');
@@ -197,7 +197,7 @@ test('toCsv: Semikolon, Anführungszeichen, BOM, Formelschutz', () => {
 });
 
 // ---- Sichtbarkeit der Ergebnisse (Blindbewertung) ----
-test('canSeeResults: Gremium sieht Ergebnisse erst nach eigener Bewertung, auch im Status «Bewertet»', () => {
+test('canSeeResults: Release Board sieht Ergebnisse erst nach eigener Bewertung, auch im Status «Bewertet»', () => {
   const v = (o) => Logic.canSeeResults({ isAdmin: false, isMember: false, hasRated: false, status: 'bewertung', ...o });
   ok(v({ isAdmin: true }), 'Admin');
   ok(!v({ isMember: true, status: 'bewertet' }), 'Mitglied ohne eigene Bewertung bei «Bewertet»');

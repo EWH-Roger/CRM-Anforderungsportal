@@ -80,7 +80,7 @@ const Logic = (() => {
     return evaluation && evaluation.count ? Math.round(evaluation.avg.aufwand) : null;
   }
   function shouldMarkRated(status, count, minRatings) { return status === 'bewertung' && count >= minRatings; }
-  // Blindbewertung: Gremium-Mitglieder sehen Ergebnisse erst nach der eigenen Bewertung oder nach der Einplanung.
+  // Blindbewertung: Mitglieder des Release Boards sehen Ergebnisse erst nach der eigenen Bewertung oder nach der Einplanung.
   function canSeeResults({ isAdmin, isMember, hasRated, status }) {
     if (isAdmin || hasRated) return true;
     if (isMember) return status === 'eingeplant' || status === 'umgesetzt';
