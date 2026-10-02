@@ -80,3 +80,64 @@ test('effortPoints: Override vor Durchschnitt', () => {
 test('shouldMarkRated', () => {
   ok(Logic.shouldMarkRated('bewertung', 2, 2)); ok(!Logic.shouldMarkRated('bewertung', 1, 2)); ok(!Logic.shouldMarkRated('bewertet', 3, 2));
 });
+
+// ---- Einreichung ----
+const FULL = () => ({
+  title: 'Offerten aus dem CRM', department: 'Verkauf', crmArea: 'Verträge', useCase: 'Als Beraterin möchte ich …',
+  pain: { situation: 'x'.repeat(80), frequency: 'wöchentlich', hoursPerWeek: 1.5, persons: 4, consequences: ['Fehler'] },
+  gain: { department: 'y'.repeat(50), company: 'Kundenzufriedenheit', successCriterion: 'Durchlaufzeit 5 auf 2 Tage', deadline: null, deadlineReason: '' },
+  systems: { affected: ['Excel'], replaceable: [{ system: 'Excel', purpose: 'Preise' }] },
+  links: ['https://example.sharepoint.com/a'],
+});
+test('validateSubmission: vollständig ist gültig mit 100 %', () => {
+  const r = Logic.validateSubmission(FULL()); eq(r.errors, {}); ok(r.valid); eq(r.quality, 100);
+});
+test('validateSubmission: leeres Formular', () => {
+  const r = Logic.validateSubmission({});
+  ok(!r.valid);
+  eq(Object.keys(r.errors).sort(), ['crmArea', 'department', 'gain.department', 'gain.successCriterion', 'pain.frequency', 'pain.hoursPerWeek', 'pain.persons', 'pain.situation', 'title']);
+  eq(r.quality, 0);
+});
+test('Mindestlängen für Pain und Gain', () => {
+  const f = FULL(); f.pain.situation = 'x'.repeat(79); f.gain.department = 'y'.repeat(49);
+  const e = Logic.validateSubmission(f).errors;
+  ok(e['pain.situation'] && e['pain.situation'].includes('aktuell 79'), e['pain.situation']);
+  ok(e['gain.department']);
+});
+test('Leerzeichen zählen nicht zur Mindestlänge', () => {
+  const f = FULL(); f.pain.situation = ' '.repeat(100);
+  ok(Logic.validateSubmission(f).errors['pain.situation']);
+});
+test('Nur Pflichtfelder ergibt 75 %', () => {
+  const f = FULL(); f.useCase = ''; f.pain.consequences = []; f.gain.company = ''; f.systems = { affected: [], replaceable: [] }; f.links = [];
+  const r = Logic.validateSubmission(f); ok(r.valid); eq(r.quality, 75);
+});
+test('Frist ohne Grund ist ungültig', () => {
+  const f = FULL(); f.gain.deadline = '2027-01-01';
+  ok(Logic.validateSubmission(f).errors['gain.deadlineReason']);
+  f.gain.deadlineReason = 'Neue Vorgabe'; ok(Logic.validateSubmission(f).valid);
+});
+test('Zahlen: Dezimalkomma, 0 Stunden erlaubt, Personen ganzzahlig ab 1', () => {
+  eq(Logic.parseNum('1,5'), 1.5); ok(Number.isNaN(Logic.parseNum(''))); ok(Number.isNaN(Logic.parseNum('abc')));
+  const f = FULL(); f.pain.hoursPerWeek = '0'; ok(!Logic.validateSubmission(f).errors['pain.hoursPerWeek']);
+  f.pain.hoursPerWeek = '1,5'; ok(!Logic.validateSubmission(f).errors['pain.hoursPerWeek']);
+  f.pain.hoursPerWeek = '-1'; ok(Logic.validateSubmission(f).errors['pain.hoursPerWeek']);
+  f.pain.hoursPerWeek = 1; f.pain.persons = '2,5'; ok(Logic.validateSubmission(f).errors['pain.persons']);
+  f.pain.persons = 0; ok(Logic.validateSubmission(f).errors['pain.persons']);
+});
+test('Ungültiger Link wird genannt', () => {
+  const f = FULL(); f.links = ['https://ok.example/x', 'sharepoint/xyz'];
+  ok(Logic.validateSubmission(f).errors.links.includes('sharepoint/xyz'));
+});
+test('Titel über 120 Zeichen', () => {
+  const f = FULL(); f.title = 't'.repeat(121); ok(Logic.validateSubmission(f).errors.title);
+});
+test('Unbekannte Häufigkeit ist ungültig', () => {
+  const f = FULL(); f.pain.frequency = 'stündlich'; ok(Logic.validateSubmission(f).errors['pain.frequency']);
+});
+test('savingsHoursPerYear', () => {
+  eq(Logic.savingsHoursPerYear({ hoursPerWeek: 1.5, persons: 4 }, 46), 276);
+  eq(Logic.savingsHoursPerYear({ hoursPerWeek: '1,5', persons: '4' }, 46), 276);
+  eq(Logic.savingsHoursPerYear({}, 46), 0);
+  eq(Logic.savingsHoursPerYear(undefined, 46), 0);
+});

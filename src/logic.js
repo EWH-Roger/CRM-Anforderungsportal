@@ -81,9 +81,62 @@ const Logic = (() => {
   }
   function shouldMarkRated(status, count, minRatings) { return status === 'bewertung' && count >= minRatings; }
 
+  // ---- Einreichung ----
+  const FREQUENCIES = ['täglich', 'wöchentlich', 'monatlich', 'seltener'];
+  const CONSEQUENCES = ['Fehler', 'Doppelerfassung', 'Medienbrüche', 'Kundenreklamationen', 'Compliance-Risiko'];
+  const LIMITS = { titleMax: 120, situationMin: 80, gainMin: 50 };
+  const REQUIRED_KEYS = ['title', 'department', 'crmArea', 'pain.situation', 'pain.frequency', 'pain.hoursPerWeek', 'pain.persons', 'gain.department', 'gain.successCriterion'];
+
+  function parseNum(v) {
+    if (v === null || v === undefined) return NaN;
+    const s = String(v).trim().replace(',', '.');
+    return s === '' ? NaN : Number(s);
+  }
+  const len = v => String(v == null ? '' : v).trim().length;
+
+  function validateSubmission(f) {
+    const e = {};
+    const p = f.pain || {}, g = f.gain || {};
+    if (!len(f.title)) e.title = 'Bitte einen Titel angeben.';
+    else if (len(f.title) > LIMITS.titleMax) e.title = `Der Titel darf höchstens ${LIMITS.titleMax} Zeichen lang sein.`;
+    if (!len(f.department)) e.department = 'Bitte die Abteilung wählen.';
+    if (!len(f.crmArea)) e.crmArea = 'Bitte den betroffenen CRM-Bereich wählen.';
+    if (len(p.situation) < LIMITS.situationMin) e['pain.situation'] = `Bitte die heutige Situation genauer beschreiben: mindestens ${LIMITS.situationMin} Zeichen (aktuell ${len(p.situation)}).`;
+    if (!FREQUENCIES.includes(p.frequency)) e['pain.frequency'] = 'Bitte die Häufigkeit wählen.';
+    const hours = parseNum(p.hoursPerWeek);
+    if (!Number.isFinite(hours) || hours < 0) e['pain.hoursPerWeek'] = 'Bitte den Zeitaufwand in Stunden pro Woche angeben (0 oder mehr, z. B. 1,5).';
+    const persons = parseNum(p.persons);
+    if (!Number.isInteger(persons) || persons < 1) e['pain.persons'] = 'Bitte die Anzahl betroffener Personen als ganze Zahl ab 1 angeben.';
+    if (len(g.department) < LIMITS.gainMin) e['gain.department'] = `Bitte den Nutzen für die Abteilung genauer beschreiben: mindestens ${LIMITS.gainMin} Zeichen (aktuell ${len(g.department)}).`;
+    if (!len(g.successCriterion)) e['gain.successCriterion'] = 'Bitte ein messbares Erfolgskriterium angeben.';
+    if (len(g.deadline) && !len(g.deadlineReason)) e['gain.deadlineReason'] = 'Bitte den Grund für die Frist angeben.';
+    const badLink = (f.links || []).find(u => !/^https?:\/\/\S+$/i.test(u));
+    if (badLink) e.links = `Dieser Link ist ungültig: ${badLink}. Links beginnen mit http:// oder https://.`;
+    return { valid: Object.keys(e).length === 0, errors: e, quality: quality(f, e) };
+  }
+  function quality(f, errors) {
+    const optional = [
+      len(f.useCase) > 0,
+      ((f.pain && f.pain.consequences) || []).length > 0,
+      len(f.gain && f.gain.company) > 0,
+      ((f.systems && f.systems.affected) || []).length > 0,
+      ((f.systems && f.systems.replaceable) || []).length > 0,
+      (f.links || []).length > 0,
+    ];
+    const got = REQUIRED_KEYS.filter(k => !errors[k]).length + 0.5 * optional.filter(Boolean).length;
+    const total = REQUIRED_KEYS.length + 0.5 * optional.length;
+    return Math.round((got / total) * 100);
+  }
+  function savingsHoursPerYear(pain, weeksPerYear) {
+    const h = parseNum(pain && pain.hoursPerWeek), n = parseNum(pain && pain.persons);
+    if (!Number.isFinite(h) || !Number.isFinite(n)) return 0;
+    return Math.round(h * n * weeksPerYear);
+  }
+
   return {
     STATUS_LABEL, STATUSES, RESULTS_VISIBLE, canTransition, manualTargets, needsReason, withStatus,
     BENEFIT_KEYS, CRITERIA, CRITERIA_LABEL, QUADRANT_LABEL, isValidRating, committeeRatings, evaluate,
     benefitIndex, score, quadrant, effortPoints, shouldMarkRated,
+    FREQUENCIES, CONSEQUENCES, LIMITS, parseNum, validateSubmission, savingsHoursPerYear,
   };
 })();
