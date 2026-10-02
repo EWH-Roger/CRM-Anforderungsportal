@@ -37,16 +37,25 @@ const UI = (() => {
     document.getElementById('confirm-reason-label').textContent = opts.reasonLabel || '';
     okBtn.textContent = opts.confirmLabel || 'Bestätigen';
     reasonWrap.hidden = !opts.reasonLabel; reason.value = ''; err.hidden = true;
+    const cancelBtn = dlg.querySelector('button[value="cancel"]');
     return new Promise(resolve => {
-      okBtn.onclick = e => {
-        if (opts.reasonLabel && !reason.value.trim()) { e.preventDefault(); err.textContent = 'Bitte einen Text eingeben.'; err.hidden = false; reason.focus(); }
-      };
-      const onClose = () => {
+      // Direkt in den Klick-Handlern auflösen; das close-Ereignis deckt nur Escape ab.
+      let done = false;
+      const finish = result => {
+        if (done) return;
+        done = true;
         dlg.removeEventListener('close', onClose);
-        resolve(dlg.returnValue === 'ok' ? { ok: true, reason: reason.value.trim() } : { ok: false });
+        if (dlg.open) dlg.close();
+        resolve(result);
       };
+      const onClose = () => finish({ ok: false });
+      okBtn.onclick = e => {
+        e.preventDefault();
+        if (opts.reasonLabel && !reason.value.trim()) { err.textContent = 'Bitte einen Text eingeben.'; err.hidden = false; reason.focus(); return; }
+        finish({ ok: true, reason: reason.value.trim() });
+      };
+      cancelBtn.onclick = e => { e.preventDefault(); finish({ ok: false }); };
       dlg.addEventListener('close', onClose);
-      dlg.returnValue = '';
       dlg.showModal();
       if (opts.reasonLabel) reason.focus();
     });
