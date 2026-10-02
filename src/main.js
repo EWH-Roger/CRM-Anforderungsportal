@@ -19,7 +19,7 @@
   function renderWho(s) {
     const el = document.getElementById('who');
     if (!s.me.id) { el.replaceChildren(); return; }
-    const roles = [s.isAdmin && 'Administration', Store.isCommittee() && 'Gremium'].filter(Boolean).join(' · ') || 'Einreichende';
+    const roles = [s.isAdmin && 'Administration', Store.isCommittee() && 'Gremium'].filter(Boolean).join(' · ') || (s.canWrite === false ? 'Lesezugriff' : 'Einreichende');
     el.replaceChildren(UI.h('strong', {}, s.me.name || 'Angemeldet'), ' · ' + roles);
   }
   function renderBanner(s) {
