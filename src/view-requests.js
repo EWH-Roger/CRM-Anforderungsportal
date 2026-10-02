@@ -106,7 +106,7 @@ const RequestsView = (() => {
           ? h('div', {}, h('p', { class: 'eyebrow' }, 'Ablösbare Systeme'), h('ul', {}, ...sy.replaceable.map(x => h('li', {}, x.system, x.purpose ? `: ${x.purpose}` : ''))))
           : para('Ablösbare Systeme', 'Keine Angabe'),
         (r.links || []).length
-          ? h('div', {}, h('p', { class: 'eyebrow' }, 'Links'), h('ul', {}, ...r.links.map(u => h('li', {}, h('a', { href: u, target: '_blank', rel: 'noopener' }, u)))))
+          ? h('div', {}, h('p', { class: 'eyebrow' }, 'Links'), h('ul', {}, ...r.links.map(u => h('li', {}, /^https?:\/\//i.test(u) ? h('a', { href: u, target: '_blank', rel: 'noopener' }, u) : u))))
           : null),
       ratingSection(st, r, ev, results),
       commentSection(st, r));
@@ -219,6 +219,11 @@ const RequestsView = (() => {
       sec.append(h('p', { class: 'note' }, r.status === 'eingeplant' ? 'Die Einplanung ändern Sie in der Roadmap.' : 'In diesem Status gibt es keine Aktionen.'));
     }
     if (r.status === 'bewertet') sec.append(h('p', { class: 'hint', style: 'margin-top:8px' }, 'Einplanen in ein Release: in der Roadmap.'));
+    // Fallback, falls die Mindestanzahl ohne neue Bewertung erreicht wird (z. B. nach Änderung der Einstellungen).
+    const ev = Store.evaluation(r);
+    if (Logic.shouldMarkRated(r.status, ev.count, Store.settings().minRatings)) {
+      sec.append(h('div', { class: 'row', style: 'margin-top:8px' }, h('button', { class: 'btn small', type: 'button', onclick: () => doStatus(r, 'bewertet', 'Als bewertet markieren') }, 'Als bewertet markieren')));
+    }
     const inp = h('input', { type: 'text', inputmode: 'decimal', id: 'adm-points', value: r.effortOverride == null ? '' : String(r.effortOverride), placeholder: 'leer = Standard' });
     const save = h('button', { class: 'btn ghost small', type: 'button' }, 'Speichern');
     save.addEventListener('click', async () => {

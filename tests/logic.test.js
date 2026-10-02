@@ -195,3 +195,14 @@ test('toCsv: Semikolon, Anführungszeichen, BOM, Formelschutz', () => {
     [{ a: 'x;y', b: 'sagt "hallo"' }, { a: '=SUMME(1)', b: 3 }, { a: null, b: 'Zeile\nzwei' }]);
   eq(csv, '﻿A;B\r\n"x;y";"sagt ""hallo"""\r\n\'=SUMME(1);3\r\n;"Zeile\nzwei"');
 });
+
+// ---- Sichtbarkeit der Ergebnisse (Blindbewertung) ----
+test('canSeeResults: Gremium sieht Ergebnisse erst nach eigener Bewertung, auch im Status «Bewertet»', () => {
+  const v = (o) => Logic.canSeeResults({ isAdmin: false, isMember: false, hasRated: false, status: 'bewertung', ...o });
+  ok(v({ isAdmin: true }), 'Admin');
+  ok(!v({ isMember: true, status: 'bewertet' }), 'Mitglied ohne eigene Bewertung bei «Bewertet»');
+  ok(v({ isMember: true, status: 'bewertet', hasRated: true }), 'Mitglied mit Bewertung');
+  ok(v({ isMember: true, status: 'eingeplant' }), 'Mitglied nach Abschluss');
+  ok(v({ status: 'bewertet' }), 'Nicht-Mitglied bei «Bewertet»');
+  ok(!v({ status: 'bewertung' }), 'Nicht-Mitglied in Bewertung');
+});

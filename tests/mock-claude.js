@@ -20,6 +20,16 @@
     return { docs: list, size: list.length, empty: !list.length, docChanges: () => [], metadata: meta };
   }
   const deliver = s => s.fn(s.kind === 'doc' ? snapDoc(s.path) : runQuery(s.q));
+  // ?slow=1: erst ein leerer Snapshot aus dem Cache, die echten Daten nach 1,5 s (wie auf der Plattform möglich).
+  const slow = new URLSearchParams(location.search).has('slow');
+  const cacheMeta = { fromCache: true, hasPendingWrites: false };
+  const firstDelivery = s => {
+    if (!slow) { setTimeout(() => deliver(s), 0); return; }
+    setTimeout(() => s.fn(s.kind === 'doc'
+      ? { id: s.path.split('/').pop(), exists: false, data: () => undefined, metadata: cacheMeta }
+      : { docs: [], size: 0, empty: true, docChanges: () => [], metadata: cacheMeta }), 0);
+    setTimeout(() => deliver(s), 1500);
+  };
   function notify() { for (const s of subs) setTimeout(() => deliver(s), 0); }
   function merge(a, b) {
     const out = { ...a };
@@ -40,7 +50,7 @@
       set: async d => { if (readOnly) deny(); docs.set(path, clone(d)); notify(); },
       update: async d => { if (readOnly) deny(); if (!docs.has(path)) throw { code: 'invalid_argument', message: 'Dokument fehlt' }; docs.set(path, merge(docs.get(path), clone(d))); notify(); },
       delete: async () => { if (readOnly) deny(); docs.delete(path); notify(); },
-      onSnapshot: fn => { const s = { kind: 'doc', path, fn }; subs.add(s); setTimeout(() => deliver(s), 0); return () => subs.delete(s); },
+      onSnapshot: fn => { const s = { kind: 'doc', path, fn }; subs.add(s); firstDelivery(s); return () => subs.delete(s); },
       collection: p => colRef(path + '/' + p),
     };
   }
@@ -50,7 +60,7 @@
       orderBy: (f, dir = 'asc') => query({ ...q, order: [f, dir] }),
       limit: k => query({ ...q, lim: k }),
       get: async () => runQuery(q),
-      onSnapshot: fn => { const s = { kind: 'col', q, fn }; subs.add(s); setTimeout(() => deliver(s), 0); return () => subs.delete(s); },
+      onSnapshot: fn => { const s = { kind: 'col', q, fn }; subs.add(s); firstDelivery(s); return () => subs.delete(s); },
     };
   }
   function colRef(path) {

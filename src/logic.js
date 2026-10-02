@@ -80,6 +80,12 @@ const Logic = (() => {
     return evaluation && evaluation.count ? Math.round(evaluation.avg.aufwand) : null;
   }
   function shouldMarkRated(status, count, minRatings) { return status === 'bewertung' && count >= minRatings; }
+  // Blindbewertung: Gremium-Mitglieder sehen Ergebnisse erst nach der eigenen Bewertung oder nach der Einplanung.
+  function canSeeResults({ isAdmin, isMember, hasRated, status }) {
+    if (isAdmin || hasRated) return true;
+    if (isMember) return status === 'eingeplant' || status === 'umgesetzt';
+    return RESULTS_VISIBLE.includes(status);
+  }
 
   // ---- Einreichung ----
   const FREQUENCIES = ['täglich', 'wöchentlich', 'monatlich', 'seltener'];
@@ -194,7 +200,7 @@ const Logic = (() => {
   return {
     STATUS_LABEL, STATUSES, RESULTS_VISIBLE, canTransition, manualTargets, needsReason, withStatus,
     BENEFIT_KEYS, CRITERIA, CRITERIA_LABEL, QUADRANT_LABEL, isValidRating, committeeRatings, evaluate,
-    benefitIndex, score, quadrant, effortPoints, shouldMarkRated,
+    benefitIndex, score, quadrant, effortPoints, shouldMarkRated, canSeeResults,
     FREQUENCIES, CONSEQUENCES, LIMITS, parseNum, validateSubmission, savingsHoursPerYear,
     suggestRoadmap, releaseUsage, nextNumber, countBy, leadTimeDays, average, replacementPotential, toCsv,
   };

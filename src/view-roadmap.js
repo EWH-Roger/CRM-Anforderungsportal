@@ -78,9 +78,9 @@ const RoadmapView = (() => {
     const c = h('article', { class: 'card', draggable: admin ? 'true' : null },
       h('button', { class: 'linkbtn t', type: 'button', onclick: () => openReq(r.id) }, `#${r.number} ${r.title}`),
       h('div', { class: 'm' },
-        h('span', {}, 'Score ', h('strong', {}, ev.count ? UI.fmtNum(ev.score, 2) : '–')),
+        h('span', {}, 'Score ', h('strong', {}, ev.count && Store.canSeeResults(r) ? UI.fmtNum(ev.score, 2) : '–')),
         h('span', {}, `${points ?? '–'} Punkte`),
-        ev.quadrant ? h('span', { class: 'chip' }, Logic.QUADRANT_LABEL[ev.quadrant]) : null));
+        ev.quadrant && Store.canSeeResults(r) ? h('span', { class: 'chip' }, Logic.QUADRANT_LABEL[ev.quadrant]) : null));
     if (admin) {
       c.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', r.id); e.dataTransfer.effectAllowed = 'move'; });
       c.append(UI.select('as-' + r.id, [['', 'Backlog'], ...openRel.map(rel => [rel.id, rel.name])], r.releaseId || '',

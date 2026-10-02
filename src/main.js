@@ -26,12 +26,13 @@
     const el = document.getElementById('banner');
     let msg = null;
     if (s.error) msg = s.error;
-    else if (s.ready && s.db && s.loaded.settings && !s.settings) {
+    else if (s.ready && !s.me.id) msg = 'Bitte melden Sie sich in claude.ai an, um Anforderungen einzureichen und zu bewerten.';
+    else if (s.ready && s.canWrite === false) {
+      msg = 'Sie haben Lesezugriff. Zum Einreichen und Bewerten braucht es die Freigabe «Contributor». Bitte bei der Administration melden.';
+    } else if (s.ready && s.db && s.loaded.settings && !s.settings) {
       msg = s.isAdmin
         ? 'Das Portal ist noch nicht eingerichtet. Bitte unter «Einstellungen» die Wertelisten prüfen und speichern.'
         : 'Das Portal wird gerade eingerichtet. Einreichen ist möglich, sobald die Administration die Einrichtung abgeschlossen hat.';
-    } else if (s.ready && s.canWrite === false) {
-      msg = 'Sie haben Lesezugriff. Zum Einreichen und Bewerten braucht es die Freigabe «Contributor». Bitte bei der Administration melden.';
     }
     el.hidden = !msg; el.textContent = msg || '';
   }

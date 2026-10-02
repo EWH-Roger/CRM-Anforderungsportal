@@ -16,8 +16,9 @@ const E2E = (() => {
   const clickText = (sel, text) => { const e = byText(sel, text); if (!e) throw new Error(`Kein ${sel} mit Text «${text}»`); e.click(); };
   const toast = () => { const t = $('#toast'); return t && !t.hidden ? t.textContent : ''; };
   function expect(cond, msg) { if (!cond) throw new Error(msg); }
-  async function run(steps) {
-    await until(() => Store.state.ready && Store.state.loaded.settings && Store.state.loaded.requests, 'Store bereit');
+  async function run(steps, opts = {}) {
+    if (opts.waitLoaded === false) await until(() => Store.state.ready, 'Store bereit');
+    else await until(() => Store.state.ready && Store.state.loaded.settings && Store.state.loaded.requests, 'Store bereit');
     await wait(150);
     for (const [name, fn] of steps) {
       try { await fn(); results.push('PASS ' + name); }

@@ -52,20 +52,25 @@ const Store = (() => {
     }
     db.doc('config/settings').onSnapshot(s => {
       state.settings = s.exists ? { ...DEFAULT_SETTINGS, ...s.data() } : null;
-      state.loaded.settings = true; emit();
+      if (s.exists || !s.metadata.fromCache) state.loaded.settings = true;
+      emit();
     }, onError);
     db.collection('requests').onSnapshot(s => {
       state.requests = s.docs.map(d => ({ ...d.data(), id: d.id }));
-      state.loaded.requests = true; emit();
+      if (!s.metadata.fromCache) state.loaded.requests = true;
+      emit();
     }, onError);
     db.collection('releases').onSnapshot(s => {
       state.releases = s.docs.map(d => ({ ...d.data(), id: d.id })).sort((a, b) => (a.order || 0) - (b.order || 0));
-      state.loaded.releases = true; emit();
+      if (!s.metadata.fromCache) state.loaded.releases = true;
+      emit();
     }, onError);
     db.collection('ratings').onSnapshot(s => {
       const r = {};
       for (const d of s.docs) r[d.id] = d.data();
-      state.ratings = r; state.loaded.ratings = true; emit();
+      state.ratings = r;
+      if (!s.metadata.fromCache) state.loaded.ratings = true;
+      emit();
     }, onError);
     state.ready = true; emit();
   }
@@ -77,7 +82,7 @@ const Store = (() => {
     const mine = state.me.id && state.ratings[state.me.id];
     return (mine && mine.byRequest && mine.byRequest[requestId]) || null;
   };
-  const canSeeResults = r => state.isAdmin || Logic.RESULTS_VISIBLE.includes(r.status) || !!myRating(r.id);
+  const canSeeResults = r => Logic.canSeeResults({ isAdmin: state.isAdmin, isMember: isCommittee(), hasRated: !!myRating(r.id), status: r.status });
   const points = r => Logic.effortPoints(r, evaluation(r));
 
   // Führt einen Schreibvorgang aus; bei «unavailable» genau ein zweiter Versuch. Fehler → Toast und null.
@@ -112,6 +117,7 @@ const Store = (() => {
   }
   const updateRequest = (id, patch, okMsg) => write(() => state.db.doc('requests/' + id).update({ ...patch, updatedAt: now() }), okMsg);
   function changeStatus(r, to, comment, extra = {}, okMsg) {
+    r = state.requests.find(x => x.id === r.id) || r;
     let patch;
     try { patch = Logic.withStatus(r, to, state.me.id, now(), comment); }
     catch (e) { UI.toast(e.message, 'err'); return Promise.resolve(null); }
@@ -120,9 +126,11 @@ const Store = (() => {
 
   async function saveRating(r, rating) {
     const ref = state.db.doc('ratings/' + state.me.id);
-    const exists = !!state.ratings[state.me.id];
     const entry = { ...rating, updatedAt: now() };
-    const ok = await write(() => exists ? ref.update({ byRequest: { [r.id]: entry } }) : ref.set({ byRequest: { [r.id]: entry } }), 'Bewertung gespeichert.');
+    const ok = await write(async () => {
+      const exists = (await ref.get()).exists;
+      return exists ? ref.update({ byRequest: { [r.id]: entry } }) : ref.set({ byRequest: { [r.id]: entry } });
+    }, 'Bewertung gespeichert.');
     if (ok == null) return null;
     const mine = (state.ratings[state.me.id] && state.ratings[state.me.id].byRequest) || {};
     const docs = { ...state.ratings, [state.me.id]: { byRequest: { ...mine, [r.id]: entry } } };

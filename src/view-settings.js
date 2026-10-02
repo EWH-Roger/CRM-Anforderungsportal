@@ -11,6 +11,7 @@ const SettingsView = (() => {
   const val = id => document.getElementById(id).value;
 
   function render(root, st) {
+    if (!st.loaded.settings) { root.append(h('p', { class: 'empty' }, 'Einstellungen werden geladen …')); return; }
     const isNew = !st.settings;
     const cur = Store.settings();
     const base = isNew ? { ...cur, ...SUGGESTED, committee: st.me.id ? [st.me.id] : [] } : cur;

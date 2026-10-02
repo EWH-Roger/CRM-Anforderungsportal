@@ -164,7 +164,9 @@ const SubmitView = (() => {
     let result = null;
     if (editing) {
       const r = Store.state.requests.find(x => x.id === editing);
-      if (r) {
+      if (r && !['eingereicht', 'klaerung'].includes(r.status)) {
+        UI.toast(`Die Anforderung ist inzwischen «${Logic.STATUS_LABEL[r.status]}» und kann nicht mehr bearbeitet werden.`, 'err');
+      } else if (r) {
         result = r.status === 'klaerung'
           ? await Store.changeStatus(r, 'eingereicht', 'Angaben ergänzt', data, 'Änderungen gespeichert.')
           : await Store.updateRequest(r.id, data, 'Änderungen gespeichert.');
@@ -217,6 +219,7 @@ const SubmitView = (() => {
     form.addEventListener('input', sync);
     form.addEventListener('change', sync);
     form.addEventListener('submit', e => { e.preventDefault(); submit(form); });
+    if (blocked) form.querySelectorAll('fieldset').forEach(fs => { fs.disabled = true; });
     root.append(form);
     showStep(form);
     updateQuality(form);
