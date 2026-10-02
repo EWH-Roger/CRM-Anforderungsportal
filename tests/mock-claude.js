@@ -96,3 +96,15 @@
     docs.set('ratings/u_gremium', { byRequest: { q1: RT(4, 4, 3, 5, 2), q2: RT(3, 2, 3, 3, 4) } });
   }
 })();
+
+/* Lädt bei ?e2e=<name> die Klicktests tests/e2e-lib.js und tests/e2e-<name>.js nach. */
+(() => {
+  const name = new URLSearchParams(location.search).get('e2e');
+  if (!name) return;
+  addEventListener('load', () => {
+    const lib = document.createElement('script');
+    lib.src = '../tests/e2e-lib.js';
+    lib.onload = () => { const s = document.createElement('script'); s.src = '../tests/e2e-' + name + '.js'; document.body.append(s); };
+    document.body.append(lib);
+  });
+})();
