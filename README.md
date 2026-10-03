@@ -114,6 +114,10 @@ Die Seite darf nur Skripte von den CDNs laden, die claude.ai erlaubt, und Styles
 | `requests/{id}/comments/{id}` | Rückfragen und Antworten | ab Contributor |
 | `ratings/{benutzer}` | alle Bewertungen einer Person | nur die Person selbst |
 
+## Datensicherung
+
+Die Datenbank des Artifacts ist der einzige Speicherort der Daten. Der Product Owner exportiert deshalb mindestens monatlich unter «Einstellungen» → «CSV exportieren» und legt die beiden Dateien an einem gesicherten Ort ab, etwa auf SharePoint. Ist der letzte Export älter als 30 Tage, weist das Portal den Product Owner darauf hin.
+
 ## Bekannte Einschränkungen (Pilot)
 
 - Rollen und Statuswechsel sichert nur die Oberfläche. Technisch kann jeder Contributor Anforderungen direkt in der Datenbank ändern.

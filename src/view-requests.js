@@ -113,6 +113,9 @@ const RequestsView = (() => {
       sec('Gain: erwarteter Nutzen',
         para('Für die Abteilung', g.department), para('Für das Unternehmen', g.company), para('Erfolgskriterium', g.successCriterion),
         g.deadline ? para('Frist', `${UI.fmtDate(g.deadline)}: ${g.deadlineReason}`) : null),
+      Logic.acceptanceList(r.acceptanceCriteria).length
+        ? sec('Akzeptanzkriterien', h('ul', { class: 'acceptance' }, ...Logic.acceptanceList(r.acceptanceCriteria).map(c => h('li', {}, c))))
+        : null,
       sec('Systeme',
         para('Betroffene Systeme', (sy.affected || []).join(', ') || 'Keine Angabe'),
         (sy.replaceable || []).length
@@ -191,6 +194,8 @@ const RequestsView = (() => {
         h('tbody', {}, ...Logic.CRITERIA.map(k => h('tr', {}, h('td', {}, Logic.CRITERIA_LABEL[k]),
           ...ids.map(id => h('td', { class: 'num' }, ev.ratings[id][k])),
           h('td', { class: 'num' }, h('strong', {}, UI.fmtNum(ev.avg[k], 1)))))))));
+      const split = Logic.disagreement(ev.ratings);
+      if (split.length) sec.append(h('p', { class: 'hint disagree', style: 'margin-top:8px' }, `Grosse Uneinigkeit bei ${split.map(k => Logic.CRITERIA_LABEL[k]).join(', ')} (3 oder mehr Punkte Abstand). Vor der Einplanung im Release Board besprechen.`));
       const notes = ids.filter(id => ev.ratings[id].comment);
       if (notes.length) sec.append(h('ul', { class: 'posts', style: 'margin-top:12px' }, ...notes.map(id =>
         h('li', {}, h('p', { class: 'meta' }, UI.nameSpan(id)), h('p', { class: 'body' }, ev.ratings[id].comment)))));
@@ -246,6 +251,13 @@ const RequestsView = (() => {
       const ok = await Store.updateRequest(r.id, { effortOverride: n }, 'Aufwandspunkte gespeichert.');
       if (ok != null) UI.clearDirty('adm-points');
     });
+    const ac = h('textarea', { id: 'adm-ac', rows: 3, placeholder: 'Ein Kriterium pro Zeile' }, r.acceptanceCriteria || '');
+    const acSave = h('button', { class: 'btn ghost small', type: 'button' }, 'Kriterien speichern');
+    acSave.addEventListener('click', async () => {
+      const ok = await Store.updateRequest(r.id, { acceptanceCriteria: document.getElementById('adm-ac').value.trim() }, 'Akzeptanzkriterien gespeichert.');
+      if (ok != null) UI.clearDirty('adm-ac');
+    });
+    sec.append(h('div', { style: 'margin-top:16px' }, UI.field('adm-ac', 'Akzeptanzkriterien', ac, 'Woran erkennt man, dass die Anforderung erfüllt ist? Vor der Bewertung erfassen.'), h('div', { class: 'row', style: 'margin-top:6px' }, acSave)));
     sec.append(h('div', { style: 'margin-top:16px' }, UI.field('adm-points', 'Aufwandspunkte für die Roadmap',
       h('div', { class: 'row' }, h('div', { style: 'flex:1 1 140px' }, inp), save),
       'Leer lassen, um den gerundeten Ø-Aufwand der Bewertungen zu verwenden.')));

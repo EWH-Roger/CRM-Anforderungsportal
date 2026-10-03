@@ -139,6 +139,15 @@ const Logic = (() => {
     return Math.round(h * n * weeksPerYear);
   }
 
+  // Kriterien, bei denen die Bewertungen 3 oder mehr Punkte auseinanderliegen.
+  function disagreement(ratings) {
+    const list = Object.values(ratings || {});
+    if (list.length < 2) return [];
+    return CRITERIA.filter(k => Math.max(...list.map(r => r[k])) - Math.min(...list.map(r => r[k])) >= 3);
+  }
+  function backupDue(lastExportAt, nowIso) { return !lastExportAt || Date.parse(nowIso) - Date.parse(lastExportAt) > 30 * 86400000; }
+  function acceptanceList(text) { return String(text || '').split('\n').map(x => x.trim()).filter(Boolean); }
+
   // ---- Hinweise im Portal ----
   // Leitet aus dem Statusverlauf ab, was für diese Person seit `since` neu ist. Eigene Aktionen zählen nicht.
   function notifications({ requests, meId, isAdmin, isMember, hasRated, since }) {
@@ -159,9 +168,10 @@ const Logic = (() => {
   }
 
   // ---- Roadmap ----
-  function suggestRoadmap(backlog, releases) {
+  // reservePercent: Anteil der Kapazität, der für Unvorhergesehenes frei bleibt.
+  function suggestRoadmap(backlog, releases, reservePercent = 0) {
     const open = releases.filter(r => r.status === 'offen').slice().sort((a, b) => a.order - b.order)
-      .map(r => ({ id: r.id, free: r.capacity - (r.used || 0) }));
+      .map(r => ({ id: r.id, free: r.capacity * (1 - reservePercent / 100) - (r.used || 0) }));
     const items = backlog.filter(b => Number.isFinite(b.points) && b.points >= 0).slice()
       .sort((a, b) => (b.score - a.score) || (a.number - b.number));
     const out = [];
@@ -221,6 +231,6 @@ const Logic = (() => {
     BENEFIT_KEYS, CRITERIA, CRITERIA_LABEL, QUADRANT_LABEL, isValidRating, committeeRatings, evaluate,
     benefitIndex, score, quadrant, effortPoints, shouldMarkRated, canSeeResults,
     FREQUENCIES, CONSEQUENCES, LIMITS, parseNum, validateSubmission, savingsHoursPerYear,
-    suggestRoadmap, releaseUsage, nextNumber, countBy, leadTimeDays, average, replacementPotential, toCsv, notifications,
+    suggestRoadmap, releaseUsage, nextNumber, countBy, leadTimeDays, average, replacementPotential, toCsv, notifications, disagreement, backupDue, acceptanceList,
   };
 })();

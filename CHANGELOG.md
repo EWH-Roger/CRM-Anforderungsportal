@@ -6,6 +6,14 @@ Das Format folgt [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), die V
 
 ## [Unveröffentlicht]
 
+## [0.7.0] - 2026-10-03
+
+### Hinzugefügt
+- **Akzeptanzkriterien:** Der Product Owner erfasst sie im Detail vor der Bewertung, eine Zeile pro Kriterium. Sie werden als Checkliste angezeigt und im CSV-Export mitgeführt.
+- **Uneinigkeit im Release Board:** Liegen die Bewertungen eines Kriteriums 3 oder mehr Punkte auseinander, erscheint ein Hinweis, die Anforderung vor der Einplanung zu besprechen.
+- **Reserve in der Roadmap:** Neue Einstellung «Reserve in %», Standard 20 %. Der automatische Vorschlag lässt diesen Anteil jeder Release-Kapazität frei.
+- **Datensicherung:** Das Portal merkt sich den letzten CSV-Export und zeigt ihn in den Einstellungen an. Der Product Owner erhält einen Hinweis, wenn noch nie oder seit über 30 Tagen nicht exportiert wurde.
+
 ## [0.6.0] - 2026-10-03
 
 ### Hinzugefügt
@@ -109,7 +117,8 @@ Erste Version für den Pilot, veröffentlicht als privates claude.ai-Artifact.
 - Eine Anforderung liess sich bearbeiten, nachdem sie bereits in Bewertung war. Statuswechsel mit veraltetem Stand konnten Einträge im Verlauf verlieren.
 - Lesende und nicht angemeldete Personen konnten Formularfelder ausfüllen.
 
-[Unveröffentlicht]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.6.0...HEAD
+[Unveröffentlicht]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.3.1...v0.4.0

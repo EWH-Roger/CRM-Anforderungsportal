@@ -17,7 +17,7 @@ const RoadmapView = (() => {
     const suggest = () => {
       proposal = Logic.suggestRoadmap(
         backlog.map(x => ({ id: x.r.id, number: x.r.number, score: x.ev.score ?? 0, points: x.points })),
-        openRel.map(rel => ({ ...rel, used: usage(rel.id) })));
+        openRel.map(rel => ({ ...rel, used: usage(rel.id) })), Store.settings().reservePercent ?? 0);
       App.render();
     };
     root.append(h('div', { class: 'spread' },
@@ -93,6 +93,7 @@ const RoadmapView = (() => {
     const relName = Object.fromEntries(st.releases.map(x => [x.id, x.name]));
     const req = Object.fromEntries(st.requests.map(x => [x.id, x]));
     return h('section', { class: 'panel proposal' }, h('h3', {}, 'Vorschlag'),
+      h('p', { class: 'hint', style: 'margin-bottom:8px' }, `Der Vorschlag lässt ${Store.settings().reservePercent ?? 0} % jeder Kapazität als Reserve frei.`),
       pairs.length
         ? h('ul', {}, ...pairs.map(p => h('li', {}, `#${req[p.requestId] ? req[p.requestId].number : '?'} ${req[p.requestId] ? req[p.requestId].title : ''} → ${relName[p.releaseId]}`)))
         : h('p', { class: 'note' }, 'Keine Anforderung passt in die freie Kapazität der offenen Releases.'),
