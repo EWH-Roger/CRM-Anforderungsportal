@@ -98,6 +98,7 @@ Zusätzliche npm-Pakete braucht es nicht. Wurde Node.js erst nach dem Start eine
   - Benachrichtigungen
   - serverseitige Rollen- und Statusprüfung
   - Anbindung an das CRM
+- **Zielgeräte:** Das Portal wird am Computer genutzt. Smartphone ist kein Ziel (Entscheid vom 03.10.2026). Auf schmalen Bildschirmen bleibt es bedienbar, Tabellen scrollen dort seitlich. Eine eigene mobile Darstellung, etwa die Liste als Karten, ist bewusst nicht vorgesehen.
 - **Begriffe:** Seit Version 0.2.1 heissen die Rollen «Release Board» und «Product Owner». Die Spezifikation in `docs/` verwendet noch die alten Begriffe «Gremium» und «Administration». Sie ist als Dokument des ursprünglichen Entwurfs unverändert geblieben.
 
 ## 7. Offene Punkte
