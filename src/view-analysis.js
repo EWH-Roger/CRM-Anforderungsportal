@@ -62,8 +62,8 @@ const AnalysisView = (() => {
       svg('text', { x: 14, y: (y(1) + y(5)) / 2, 'text-anchor': 'middle', transform: `rotate(-90 14 ${(y(1) + y(5)) / 2})` }, 'Nutzen-Index →'));
     const q = (label, qx, qy, anchor) => svg('text', { class: 'qlabel', x: qx, y: qy, 'text-anchor': anchor }, label);
     g.append(
-      q('QUICK WINS', x(1) + 8, y(5) + 16, 'start'), q('GROSSE VORHABEN', x(5) - 8, y(5) + 16, 'end'),
-      q('LÜCKENFÜLLER', x(1) + 8, y(1) - 8, 'start'), q('VERMEIDEN', x(5) - 8, y(1) - 8, 'end'));
+      q(Logic.QUADRANT_LABEL.quickwin, x(1) + 8, y(5) + 16, 'start'), q(Logic.QUADRANT_LABEL.gross, x(5) - 8, y(5) + 16, 'end'),
+      q(Logic.QUADRANT_LABEL.lueckenfueller, x(1) + 8, y(1) - 8, 'start'), q(Logic.QUADRANT_LABEL.vermeiden, x(5) - 8, y(1) - 8, 'end'));
     const seen = new Map();
     const withLabels = rated.length <= 20;
     for (const { r, ev } of rated) {
@@ -72,7 +72,7 @@ const AnalysisView = (() => {
       seen.set(key, k + 1);
       const cx = x(ev.effort) + k * 14, cy = y(ev.benefit);
       const pt = svg('g', { class: 'pt', tabindex: 0, role: 'link', 'aria-label': `#${r.number} ${r.title}: Nutzen ${UI.fmtNum(ev.benefit, 2)}, Aufwand ${UI.fmtNum(ev.effort, 2)}, Score ${UI.fmtNum(ev.score, 2)}` },
-        svg('title', {}, `#${r.number} ${r.title}\nNutzen ${UI.fmtNum(ev.benefit, 2)} · Aufwand ${UI.fmtNum(ev.effort, 2)} · Score ${UI.fmtNum(ev.score, 2)}`),
+        svg('title', {}, `#${r.number} ${r.title}\nNutzen ${UI.fmtNum(ev.benefit, 2)}, Aufwand ${UI.fmtNum(ev.effort, 2)}, Score ${UI.fmtNum(ev.score, 2)}`),
         svg('circle', { class: 'hit', cx, cy, r: 16 }),
         svg('circle', { cx, cy, r: 7 }),
         withLabels ? svg('text', { x: cx + 11, y: cy + 4 }, '#' + r.number) : null);
@@ -106,5 +106,25 @@ const AnalysisView = (() => {
         : h('p', { class: 'note' }, emptyText));
   }
 
-  return { render };
+  // Kleine Matrix für die Detailansicht: alle sichtbaren Anforderungen grau, die aktuelle hervorgehoben.
+  function miniMatrix(rated, currentId) {
+    const W = 240, H = 170, m = 14;
+    const x = v => m + ((v - 1) / 4) * (W - 2 * m);
+    const y = v => H - m - ((v - 1) / 4) * (H - 2 * m);
+    const cur = rated.find(o => o.r.id === currentId);
+    const g = svg('svg', { viewBox: `0 0 ${W} ${H}`, class: 'mini-matrix', role: 'img',
+      'aria-label': cur ? `Position von #${cur.r.number} in der Nutzen/Aufwand-Matrix: ${Logic.QUADRANT_LABEL[cur.ev.quadrant]}` : 'Nutzen/Aufwand-Matrix' },
+      svg('rect', { class: 'frame', x: m, y: m, width: W - 2 * m, height: H - 2 * m }),
+      svg('line', { class: 'divider', x1: x(3), x2: x(3), y1: y(1), y2: y(5) }),
+      svg('line', { class: 'divider', x1: x(1), x2: x(5), y1: y(3), y2: y(3) }),
+      svg('text', { x: x(1) + 4, y: y(5) + 12 }, Logic.QUADRANT_LABEL.quickwin),
+      svg('text', { x: x(5) - 4, y: y(1) - 4, 'text-anchor': 'end' }, Logic.QUADRANT_LABEL.vermeiden),
+      svg('text', { x: W / 2, y: H - 2, 'text-anchor': 'middle' }, 'Aufwand'),
+      svg('text', { x: 9, y: H / 2, 'text-anchor': 'middle', transform: `rotate(-90 9 ${H / 2})` }, 'Nutzen'));
+    for (const o of rated) if (o.r.id !== currentId) g.append(svg('circle', { class: 'other', cx: x(o.ev.effort), cy: y(o.ev.benefit), r: 3.5 }));
+    if (cur) g.append(svg('circle', { class: 'current', cx: x(cur.ev.effort), cy: y(cur.ev.benefit), r: 6.5 }));
+    return g;
+  }
+
+  return { render, miniMatrix };
 })();

@@ -6,6 +6,23 @@ Das Format folgt [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), die V
 
 ## [Unveröffentlicht]
 
+## [0.8.0] - 2026-10-03
+
+### Hinzugefügt
+- **Detailansicht:**
+  - Entscheidungsleiste unter dem Titel mit Status, Score, Einordnung und Einsparpotenzial.
+  - Kleine Nutzen/Aufwand-Matrix, die die Anforderung im Vergleich zu den anderen zeigt.
+- Glossar in der README.
+
+### Geändert
+- **Detailansicht:** Use Case, Pain, Gain, Akzeptanzkriterien und Systeme stehen in einer Box statt in vielen.
+- Labels stehen in normaler Schreibweise statt in Grossbuchstaben.
+- Angaben sind klar getrennt statt mit Mittelpunkten verkettet.
+- Die Matrix verwendet dieselben Bezeichnungen wie die übrigen Ansichten.
+
+### Behoben
+- Rahmen von Eingabefeldern haben in beiden Modi mindestens 3:1 Kontrast (WCAG 1.4.11). Linien und Tabellen bleiben hellblau.
+
 ## [0.7.0] - 2026-10-03
 
 ### Hinzugefügt
@@ -117,7 +134,8 @@ Erste Version für den Pilot, veröffentlicht als privates claude.ai-Artifact.
 - Eine Anforderung liess sich bearbeiten, nachdem sie bereits in Bewertung war. Statuswechsel mit veraltetem Stand konnten Einträge im Verlauf verlieren.
 - Lesende und nicht angemeldete Personen konnten Formularfelder ausfüllen.
 
-[Unveröffentlicht]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.7.0...HEAD
+[Unveröffentlicht]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.4.0...v0.5.0

@@ -19,8 +19,8 @@
   function renderWho(s) {
     const el = document.getElementById('who');
     if (!s.me.id) { el.replaceChildren(); return; }
-    const roles = [s.isAdmin && 'Product Owner', Store.isCommittee() && 'Release Board'].filter(Boolean).join(' · ') || (s.canWrite === false ? 'Lesezugriff' : 'Einreichende');
-    el.replaceChildren(UI.h('strong', {}, s.me.name || 'Angemeldet'), ' · ' + roles);
+    const roles = [s.isAdmin && 'Product Owner', Store.isCommittee() && 'Release Board'].filter(Boolean).join(', ') || (s.canWrite === false ? 'Lesezugriff' : 'Einreichende');
+    el.replaceChildren(UI.h('strong', {}, s.me.name || 'Angemeldet'), ' (' + roles + ')');
   }
   function renderBanner(s) {
     const el = document.getElementById('banner');

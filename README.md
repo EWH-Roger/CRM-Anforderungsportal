@@ -50,6 +50,24 @@ Die ersten vier sind Nutzen-Kriterien. Daraus berechnet das Portal:
 
 Es zählen nur Bewertungen von aktuellen Mitgliedern des Release Boards. Ein Mitglied sieht die Bewertungen der anderen erst, nachdem es selbst bewertet hat.
 
+## Glossar
+
+Diese Begriffe gelten einheitlich in Oberfläche, Export und Dokumentation.
+
+| Begriff | Bedeutung |
+|---|---|
+| Product Owner | verantwortet Prüfung, Status und Roadmap (Freigabe Owner oder Editor) |
+| Release Board | Personen, die Anforderungen bewerten |
+| Einreichende | Personen aus dem Business, die Anforderungen erfassen |
+| Nutzen-Index | gewichteter Durchschnitt der vier Nutzen-Kriterien, 1 bis 5 |
+| Score | Nutzen-Index ÷ Ø Aufwand; höher heisst lohnender |
+| Einordnung | Feld der Nutzen/Aufwand-Matrix: Quick Win, Grosses Vorhaben, Lückenfüller oder Vermeiden |
+| Aufwandspunkte | Grösse einer Anforderung für die Roadmap, standardmässig der gerundete Ø Aufwand |
+| Backlog | bewertete, noch nicht eingeplante Anforderungen |
+| Release | geplante Auslieferung mit Kapazität in Aufwandspunkten |
+| Reserve | Anteil der Kapazität, den der automatische Vorschlag frei lässt |
+| Akzeptanzkriterien | Bedingungen, an denen man erkennt, dass eine Anforderung erfüllt ist |
+
 ## Projektstruktur
 
 ```
