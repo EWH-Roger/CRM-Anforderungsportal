@@ -1,6 +1,6 @@
 # Übergabe CRM-Anforderungsportal
 
-Stand: 02.10.2026, Version 0.3.1
+Stand: 03.10.2026, Version 0.6.0
 
 Dieses Dokument ist für alle, die das Portal betreuen oder weiterentwickeln, auch für eine neue Claude-Sitzung. Es fasst zusammen, wo alles liegt, was der aktuelle Stand ist und was als Nächstes ansteht. Die fachliche Beschreibung steht in der [README](README.md), die Änderungen pro Version im [Changelog](CHANGELOG.md).
 
@@ -24,7 +24,7 @@ Das Artifact gehört dem claude.ai-Konto von Roger Oettli. Veröffentlichen, fre
 
 ## 3. Aktueller Stand
 
-- **Live:** Version 0.3.1, auf claude.ai Version 5 des Artifacts.
+- **Live:** Version 0.6.0, auf claude.ai Version 8 des Artifacts. Die laufende Version steht in der Fusszeile des Portals.
 - **Freigabe:** Das Artifact ist privat. Ausser dem Owner kann es niemand öffnen, bis es über «Teilen» freigegeben wird.
 - **Daten (geprüft am 02.10.2026):**
   - Die Einstellungen sind gespeichert, mit eigenen Abteilungen (u. a. Telekom, Energie, Fernwärme, Gas, Elektrizität) und Systemen (u. a. Innosolv, Hubspot, Freshdesk).
@@ -32,10 +32,9 @@ Das Artifact gehört dem claude.ai-Konto von Roger Oettli. Veröffentlichen, fre
   - Es gibt eine Anforderung, #1 «Telekom ist cool». Das ist ein Testeintrag.
   - Testdaten aus der Entwicklung sind keine in der Datenbank.
 - **Git:**
-  - `main` enthält Version 0.1.0 sowie README und Changelog (Pull Requests #1 und #2).
-  - Die Versionen 0.2.0 bis 0.3.1 und diese Übergabe liegen auf `feature/anforderungsportal` und kommen mit einem weiteren Pull Request nach `main`.
-  - Für jede Version gibt es ein Tag (`v0.1.0` bis `v0.3.1`).
-- **Tests:** Alle grün, Stand 0.3.1: 39 Logik-Tests, 4 UI-Tests und 35 Klicktestläufe.
+  - Die Versionen 0.4.0 bis 0.6.0 liegen auf `feature/anforderungsportal` und kommen mit Pull Request #4 nach `main`. Bis 0.3.1 ist `main` aktuell (Pull Requests #1 bis #3).
+  - Für jede Version gibt es ein Tag (`v0.1.0` bis `v0.6.0`).
+- **Tests:** Alle grün, Stand 0.6.0: 44 Logik-Tests, 4 UI-Tests und 40 Klicktestläufe.
 
 ## 4. Rollen im Portal
 
@@ -64,7 +63,7 @@ Zusätzliche npm-Pakete braucht es nicht. Wurde Node.js erst nach dem Start eine
 3. `bash tests/run.sh && bash tests/e2e-all.sh` ausführen. Alles muss grün sein.
 4. Visuell prüfen: `bash tests/shot.sh <reiter> <rolle> <breite> [dark]` erzeugt ein Bildschirmfoto in `dist/`.
 5. Einen Eintrag in `CHANGELOG.md` unter «Unveröffentlicht» ergänzen.
-6. `bash build.sh` ausführen und `dist/anforderungsportal.html` unter derselben Artifact-URL neu veröffentlichen. Die Daten bleiben dabei erhalten.
+6. Die neue Version im Changelog eintragen (die Fusszeile liest sie dort), dann `bash build.sh` ausführen und `dist/anforderungsportal.html` unter derselben Artifact-URL neu veröffentlichen. Die Daten bleiben dabei erhalten.
 7. Im Changelog aus «Unveröffentlicht» eine Version mit Datum machen, committen, das Tag `vX.Y.Z` setzen, pushen und einen Pull Request nach `main` erstellen.
 
 ### Lokale Vorschau und Testdaten
@@ -98,11 +97,10 @@ Zusätzliche npm-Pakete braucht es nicht. Wurde Node.js erst nach dem Start eine
 ## 7. Offene Punkte
 
 ### Als Nächstes zu tun
-1. **`main` nachführen:** Den Pull Request mit den Versionen 0.2.0 bis 0.3.1 und dieser Übergabe zusammenführen.
-2. **Portal freigeben:** Über «Teilen» die Einreichenden und das Release Board als Contributor eintragen, Mitlesende als Viewer.
-3. **Release Board einrichten:** Unter «Einstellungen» die Mitglieder und das erste Release mit seiner Kapazität erfassen. **Achtung:** Heute hat das Release Board 1 Mitglied bei einer Mindestanzahl von 3 Bewertungen. Solange es weniger Mitglieder als die Mindestanzahl gibt, erreicht keine Anforderung den Status «Bewertet». Entweder Mitglieder ergänzen oder die Mindestanzahl senken.
-4. **Wertelisten prüfen:** Abteilungen, CRM-Bereiche und Systeme stammen teilweise aus Vorschlägen und sollten zur EW Höfe AG passen.
-5. **Testeinträge entfernen:** Vor dem Start des Pilots die Anforderung #1 «Telekom ist cool» und andere Probeeinträge löschen. Im Portal selbst geht das derzeit nicht, nur direkt in der Datenbank des Artifacts, zum Beispiel über Claude Code. Danach beginnt die Laufnummer wieder bei 1.
+1. **Portal freigeben:** Über «Teilen» die Einreichenden und das Release Board als Contributor eintragen, Mitlesende als Viewer.
+2. **Release Board einrichten:** Unter «Einstellungen» die Mitglieder und das erste Release mit seiner Kapazität erfassen. **Achtung:** Heute hat das Release Board 1 Mitglied bei einer Mindestanzahl von 3 Bewertungen. Solange es weniger Mitglieder als die Mindestanzahl gibt, erreicht keine Anforderung den Status «Bewertet». Entweder Mitglieder ergänzen oder die Mindestanzahl senken.
+3. **Wertelisten prüfen:** Abteilungen, CRM-Bereiche und Systeme stammen teilweise aus Vorschlägen und sollten zur EW Höfe AG passen.
+4. **Testeinträge entfernen:** Vor dem Start des Pilots die Anforderung #1 «Telekom ist cool» und andere Probeeinträge löschen. Im Portal selbst geht das derzeit nicht, nur direkt in der Datenbank des Artifacts, zum Beispiel über Claude Code. Danach beginnt die Laufnummer wieder bei 1.
 
 ### Bekannte Einschränkungen des Pilots
 - Rollen und Statuswechsel sichert nur die Oberfläche. Technisch kann jeder Contributor Anforderungen direkt in der Datenbank ändern.
@@ -120,6 +118,13 @@ Zusätzliche npm-Pakete braucht es nicht. Wurde Node.js erst nach dem Start eine
 - Es gibt keine Warnung, wenn die Mindestanzahl Bewertungen grösser ist als das Release Board.
 - Bricht die Verbindung zur Datenbank ganz ab, zeigt die Seite bis zum Neuladen einen Hinweis und den alten Stand.
 - Einige Formularfelder haben noch keinen Hilfetext mit Beispiel, etwa Abteilung, Häufigkeit und Grund der Frist.
+
+### Benachrichtigungen
+- **Heute (ab 0.4.0):** Hinweise im Portal für Product Owner, Release Board und Einreichende. Sie erscheinen nur, wenn die Person das Portal öffnet.
+- **Grenzen:**
+  - Der Zeitpunkt «gelesen bis» gilt pro Browser (`localStorage`, Schlüssel `portal-seen`), nicht pro Person.
+  - Antworten in den Kommentaren erzeugen keinen Hinweis.
+- **Nach dem Pilot vorgesehen:** E-Mail über Outlook. Das Artifact hat keinen eigenen Server und kann nicht selbst versenden. Infrage kommen ein claude.ai-Konnektor beim Absenden oder ein geplanter Agent, der regelmässig zusammenfasst. Beides ist noch abzuklären.
 
 ### Mögliche Erweiterungen
 - KI-Qualitätscheck vor dem Absenden. Die Plattform bietet dafür die Capability `sample`.

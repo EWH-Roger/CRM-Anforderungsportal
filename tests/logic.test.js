@@ -206,3 +206,28 @@ test('canSeeResults: Release Board sieht Ergebnisse erst nach eigener Bewertung,
   ok(v({ status: 'bewertet' }), 'Nicht-Mitglied bei «Bewertet»');
   ok(!v({ status: 'bewertung' }), 'Nicht-Mitglied in Bewertung');
 });
+
+// ---- Hinweise im Portal ----
+const H = (status, at, by, comment = '') => ({ status, at, by, comment });
+const NREQS = [
+  { id: 'a', number: 1, title: 'Neu', status: 'eingereicht', submittedBy: 'sub', statusHistory: [H('eingereicht', 't2', 'sub')] },
+  { id: 'b', number: 2, title: 'Freigegeben', status: 'bewertung', submittedBy: 'sub', statusHistory: [H('eingereicht', 't0', 'sub'), H('bewertung', 't3', 'po')] },
+  { id: 'c', number: 3, title: 'Rückfrage', status: 'klaerung', submittedBy: 'sub', statusHistory: [H('eingereicht', 't0', 'sub'), H('klaerung', 't4', 'po', 'Welche Felder?')] },
+  { id: 'd', number: 4, title: 'Ergänzt', status: 'eingereicht', submittedBy: 'sub', statusHistory: [H('eingereicht', 't0', 'sub'), H('klaerung', 't1', 'po'), H('eingereicht', 't5', 'sub', 'Angaben ergänzt')] },
+];
+const notes = o => Logic.notifications({ requests: NREQS, meId: 'x', isAdmin: false, isMember: false, hasRated: () => false, since: 't1', ...o });
+test('Hinweise: beim ersten Besuch keine', () => { eq(notes({ isAdmin: true, since: null }), []); });
+test('Hinweise Product Owner: neue und erneut eingereichte Anforderungen, neueste zuerst', () => {
+  eq(notes({ meId: 'po', isAdmin: true }).map(n => [n.requestId, n.text]), [['d', 'Erneut eingereicht: Angaben ergänzt'], ['a', 'Neue Anforderung']]);
+});
+test('Hinweise Release Board: zur Bewertung freigegeben, nur ohne eigene Bewertung', () => {
+  eq(notes({ meId: 'rb', isMember: true }).map(n => [n.requestId, n.text]), [['b', 'Zur Bewertung freigegeben']]);
+  eq(notes({ meId: 'rb', isMember: true, hasRated: id => id === 'b' }), []);
+});
+test('Hinweise Einreichende: Statuswechsel der eigenen Anforderungen mit Kommentar', () => {
+  eq(notes({ meId: 'sub' }).map(n => [n.requestId, n.text]), [['c', 'In Klärung: Welche Felder?'], ['b', 'In Bewertung']]);
+});
+test('Hinweise: eigene Aktionen und Ereignisse vor dem letzten Besuch zählen nicht', () => {
+  eq(notes({ meId: 'po', isAdmin: true, since: 't9' }), []);
+  eq(notes({ meId: 'sub', isAdmin: true }).filter(n => n.requestId === 'a' || n.requestId === 'd'), []);
+});

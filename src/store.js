@@ -85,6 +85,22 @@ const Store = (() => {
   const canSeeResults = r => Logic.canSeeResults({ isAdmin: state.isAdmin, isMember: isCommittee(), hasRated: !!myRating(r.id), status: r.status });
   const points = r => Logic.effortPoints(r, evaluation(r));
 
+  // Hinweise: «gelesen bis» pro Browser. Beim ersten Besuch gilt jetzt, damit nichts Altes als neu erscheint.
+  // ponytail: pro Browser statt pro Person; in data/users/<id> speichern, wenn mehrere Geräte stören.
+  const SEEN_KEY = 'portal-seen';
+  function seenAt() {
+    try {
+      let v = localStorage.getItem(SEEN_KEY);
+      if (!v) { v = now(); localStorage.setItem(SEEN_KEY, v); }
+      return v;
+    } catch (e) { return null; }
+  }
+  const notifications = () => !state.me.id ? [] : Logic.notifications({
+    requests: state.requests, meId: state.me.id, isAdmin: state.isAdmin, isMember: isCommittee(),
+    hasRated: id => !!myRating(id), since: seenAt(),
+  });
+  function markSeen() { try { localStorage.setItem(SEEN_KEY, now()); } catch (e) { /* Speicher gesperrt */ } emit(); }
+
   // Führt einen Schreibvorgang aus; bei «unavailable» genau ein zweiter Versuch. Fehler → Toast und null.
   async function write(fn, okMsg) {
     for (let attempt = 0; ; attempt++) {
@@ -237,7 +253,7 @@ const Store = (() => {
   }
 
   return {
-    DEFAULT_SETTINGS, state, init, subscribe, settings, isCommittee, evaluation, myRating, canSeeResults, points,
+    DEFAULT_SETTINGS, state, init, subscribe, settings, isCommittee, evaluation, myRating, canSeeResults, points, notifications, markSeen,
     saveSettings, createRequest, updateRequest, changeStatus, saveRating, watchComments, addComment,
     saveRelease, deleteRelease, assign, deliverRelease, applySuggestion, exportCsv,
   };

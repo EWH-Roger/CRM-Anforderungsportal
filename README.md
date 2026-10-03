@@ -15,7 +15,7 @@ Das Portal ist eine einzelne HTML-Seite und läuft als claude.ai-Artifact. Die D
 | Bereich | Inhalt |
 |---|---|
 | Einreichen | Geführtes Formular in vier Schritten: Worum geht es, Pain, Gain, Systeme. Es zeigt die Vollständigkeit an und berechnet das Einsparpotenzial in Stunden pro Jahr. Eine Hilfespalte zeigt Tipps, den weiteren Ablauf und die eigenen Anforderungen. |
-| Anforderungen | Liste mit Suche und Filtern. Die Detailansicht zeigt den Statusverlauf, Rückfragen und die Bewertung durch das Release Board. |
+| Anforderungen | Liste mit Suche und Filtern. Hinweise auf Neuigkeiten seit dem letzten Besuch (Zahl am Reiter, Box über der Liste). Die Detailansicht zeigt den Statusverlauf, Rückfragen und die Bewertung durch das Release Board. |
 | Auswertung | Kennzahlen, Nutzen/Aufwand-Matrix, Rangliste nach Score, Verteilungen und Ablösepotenzial der genannten Systeme. |
 | Roadmap | Releases mit Kapazität in Aufwandspunkten. Zuordnung per Drag & Drop oder Auswahl, automatischer Vorschlag nach Score, Auslieferung eines Release. |
 | Darstellung | Umschalter in der Kopfzeile: «System», «Hell» oder «Dunkel». Die Wahl gilt pro Person und Browser. |
@@ -61,6 +61,7 @@ src/            Quelltext der Seite
   view-*.js     die fünf Ansichten
   main.js       Navigation und Start
 tests/          Tests, Mock der Plattform, Hilfsskripte
+assets/         EWH-Logo (wird beim Build als data-URI eingebettet)
 build.sh        setzt src/ zu dist/anforderungsportal.html zusammen
 docs/           Spezifikation und Umsetzungsplan
 ```
@@ -99,7 +100,7 @@ Der Mock hält die Daten nur im Arbeitsspeicher. Nach einem Neuladen beginnt er 
 2. `bash tests/run.sh && bash tests/e2e-all.sh` ausführen. Alle Tests müssen grün sein.
 3. `bash build.sh`
 4. `dist/anforderungsportal.html` unter derselben Artifact-URL neu veröffentlichen. Die Daten in der Datenbank bleiben dabei erhalten.
-5. Einen Eintrag in [CHANGELOG.md](CHANGELOG.md) unter «Unveröffentlicht» ergänzen und bei einer Veröffentlichung eine neue Version anlegen.
+5. Einen Eintrag in [CHANGELOG.md](CHANGELOG.md) unter «Unveröffentlicht» ergänzen und bei einer Veröffentlichung eine neue Version anlegen. Die Version **vor** `build.sh` eintragen: Die Fusszeile des Portals zeigt die oberste Version aus dem Changelog.
 
 Die Seite darf nur Skripte von den CDNs laden, die claude.ai erlaubt, und Stylesheets nur von Google Fonts. Deshalb bündelt `build.sh` den gesamten Code direkt in die Seite.
 

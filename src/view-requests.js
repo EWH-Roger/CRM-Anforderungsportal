@@ -48,6 +48,7 @@ const RequestsView = (() => {
     const list = visible(st);
     root.append(
       h('div', { class: 'spread' }, h('h2', {}, 'Anforderungen'), h('span', { class: 'note' }, `${list.length} von ${st.requests.length}`)),
+      newsBox() || '',
       h('div', { class: 'filters' },
         h('input', { type: 'search', id: 'flt-q', placeholder: 'Suchen nach Titel, Text oder #Nummer', 'aria-label': 'Suchen', value: filters.q, oninput: upd('q') }),
         UI.select('flt-status', [['', 'Alle Status'], ...Logic.STATUSES.map(s => [s, Logic.STATUS_LABEL[s]])], filters.status, { label: 'Status', onchange: upd('status') }),
@@ -68,6 +69,18 @@ const RequestsView = (() => {
           h('td', { class: 'num' }, '#' + r.number), h('td', {}, r.title), h('td', {}, r.department), h('td', {}, r.crmArea),
           h('td', {}, UI.pill(r.status)), h('td', { class: 'num' }, show ? UI.fmtNum(ev.score, 2) : '–'), h('td', { class: 'num' }, UI.fmtDate(r.submittedAt)));
       })))));
+  }
+
+  function newsBox() {
+    const news = Store.notifications();
+    if (!news.length) return null;
+    return h('section', { class: 'panel news' },
+      h('div', { class: 'spread' }, h('h2', {}, 'Neu seit Ihrem letzten Besuch'),
+        h('button', { class: 'btn ghost small', type: 'button', onclick: () => Store.markSeen() }, 'Als gelesen markieren')),
+      h('ul', {}, ...news.slice(0, 10).map(n => h('li', {},
+        h('button', { class: 'linkbtn', type: 'button', onclick: () => open(n.requestId) }, `#${n.number} ${n.title}`),
+        h('span', { class: 'meta' }, ` · ${n.text} · ${UI.fmtDateTime(n.at)}`)))),
+      news.length > 10 ? h('p', { class: 'hint' }, `und ${news.length - 10} weitere`) : null);
   }
 
   // ---- Detail ----

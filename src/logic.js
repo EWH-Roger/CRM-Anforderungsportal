@@ -139,6 +139,25 @@ const Logic = (() => {
     return Math.round(h * n * weeksPerYear);
   }
 
+  // ---- Hinweise im Portal ----
+  // Leitet aus dem Statusverlauf ab, was für diese Person seit `since` neu ist. Eigene Aktionen zählen nicht.
+  function notifications({ requests, meId, isAdmin, isMember, hasRated, since }) {
+    if (!since) return [];
+    const out = [];
+    for (const r of requests) {
+      (r.statusHistory || []).forEach((e, i) => {
+        if (!(e.at > since) || e.by === meId) return;
+        const suffix = e.comment ? ': ' + e.comment : '';
+        let text = null;
+        if (isAdmin && e.status === 'eingereicht') text = (i === 0 ? 'Neue Anforderung' : 'Erneut eingereicht') + suffix;
+        else if (isMember && e.status === 'bewertung' && r.status === 'bewertung' && !hasRated(r.id)) text = 'Zur Bewertung freigegeben';
+        else if (r.submittedBy === meId) text = STATUS_LABEL[e.status] + suffix;
+        if (text) out.push({ requestId: r.id, number: r.number, title: r.title, status: e.status, at: e.at, text });
+      });
+    }
+    return out.sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0));
+  }
+
   // ---- Roadmap ----
   function suggestRoadmap(backlog, releases) {
     const open = releases.filter(r => r.status === 'offen').slice().sort((a, b) => a.order - b.order)
@@ -202,6 +221,6 @@ const Logic = (() => {
     BENEFIT_KEYS, CRITERIA, CRITERIA_LABEL, QUADRANT_LABEL, isValidRating, committeeRatings, evaluate,
     benefitIndex, score, quadrant, effortPoints, shouldMarkRated, canSeeResults,
     FREQUENCIES, CONSEQUENCES, LIMITS, parseNum, validateSubmission, savingsHoursPerYear,
-    suggestRoadmap, releaseUsage, nextNumber, countBy, leadTimeDays, average, replacementPotential, toCsv,
+    suggestRoadmap, releaseUsage, nextNumber, countBy, leadTimeDays, average, replacementPotential, toCsv, notifications,
   };
 })();
