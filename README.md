@@ -100,7 +100,7 @@ Der Mock hält die Daten nur im Arbeitsspeicher. Nach einem Neuladen beginnt er 
 2. `bash tests/run.sh && bash tests/e2e-all.sh` ausführen. Alle Tests müssen grün sein.
 3. `bash build.sh`
 4. `dist/anforderungsportal.html` unter derselben Artifact-URL neu veröffentlichen. Die Daten in der Datenbank bleiben dabei erhalten.
-5. Einen Eintrag in [CHANGELOG.md](CHANGELOG.md) unter «Unveröffentlicht» ergänzen und bei einer Veröffentlichung eine neue Version anlegen.
+5. Einen Eintrag in [CHANGELOG.md](CHANGELOG.md) unter «Unveröffentlicht» ergänzen und bei einer Veröffentlichung eine neue Version anlegen. Die Version **vor** `build.sh` eintragen: Die Fusszeile des Portals zeigt die oberste Version aus dem Changelog.
 
 Die Seite darf nur Skripte von den CDNs laden, die claude.ai erlaubt, und Stylesheets nur von Google Fonts. Deshalb bündelt `build.sh` den gesamten Code direkt in die Seite.
 

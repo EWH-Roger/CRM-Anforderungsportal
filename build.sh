@@ -16,6 +16,9 @@ if grep -l '</script' $present >/dev/null 2>&1; then echo "FEHLER: '</script' im
 } > dist/anforderungsportal.html
 logo="data:image/png;base64,$(base64 -w0 assets/ewh-logo.png)"
 sed -i "s|{{LOGO}}|$logo|" dist/anforderungsportal.html
+# Version = oberste veröffentlichte Version im Changelog
+version="$(grep -m1 -oE '^## [[0-9]+.[0-9]+.[0-9]+]' CHANGELOG.md | grep -oE '[0-9.]+')"
+sed -i "s|{{VERSION}}|$version|" dist/anforderungsportal.html
 {
   echo '<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>'
   if [ -f tests/mock-claude.js ]; then echo '<script>'; cat tests/mock-claude.js; echo '</script>'; fi

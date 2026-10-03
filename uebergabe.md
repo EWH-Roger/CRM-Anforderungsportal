@@ -1,6 +1,6 @@
 # Übergabe CRM-Anforderungsportal
 
-Stand: 03.10.2026, Version 0.5.0
+Stand: 03.10.2026, Version 0.6.0
 
 Dieses Dokument ist für alle, die das Portal betreuen oder weiterentwickeln, auch für eine neue Claude-Sitzung. Es fasst zusammen, wo alles liegt, was der aktuelle Stand ist und was als Nächstes ansteht. Die fachliche Beschreibung steht in der [README](README.md), die Änderungen pro Version im [Changelog](CHANGELOG.md).
 
@@ -24,7 +24,7 @@ Das Artifact gehört dem claude.ai-Konto von Roger Oettli. Veröffentlichen, fre
 
 ## 3. Aktueller Stand
 
-- **Live:** Version 0.5.0, auf claude.ai Version 7 des Artifacts.
+- **Live:** Version 0.6.0, auf claude.ai Version 8 des Artifacts. Die laufende Version steht in der Fusszeile des Portals.
 - **Freigabe:** Das Artifact ist privat. Ausser dem Owner kann es niemand öffnen, bis es über «Teilen» freigegeben wird.
 - **Daten (geprüft am 02.10.2026):**
   - Die Einstellungen sind gespeichert, mit eigenen Abteilungen (u. a. Telekom, Energie, Fernwärme, Gas, Elektrizität) und Systemen (u. a. Innosolv, Hubspot, Freshdesk).
@@ -32,9 +32,9 @@ Das Artifact gehört dem claude.ai-Konto von Roger Oettli. Veröffentlichen, fre
   - Es gibt eine Anforderung, #1 «Telekom ist cool». Das ist ein Testeintrag.
   - Testdaten aus der Entwicklung sind keine in der Datenbank.
 - **Git:**
-  - Die Versionen 0.4.0 und 0.5.0 liegen auf `feature/anforderungsportal` und kommen mit Pull Request #4 nach `main`. Bis 0.3.1 ist `main` aktuell (Pull Requests #1 bis #3).
-  - Für jede Version gibt es ein Tag (`v0.1.0` bis `v0.5.0`).
-- **Tests:** Alle grün, Stand 0.5.0: 44 Logik-Tests, 4 UI-Tests und 39 Klicktestläufe.
+  - Die Versionen 0.4.0 bis 0.6.0 liegen auf `feature/anforderungsportal` und kommen mit Pull Request #4 nach `main`. Bis 0.3.1 ist `main` aktuell (Pull Requests #1 bis #3).
+  - Für jede Version gibt es ein Tag (`v0.1.0` bis `v0.6.0`).
+- **Tests:** Alle grün, Stand 0.6.0: 44 Logik-Tests, 4 UI-Tests und 40 Klicktestläufe.
 
 ## 4. Rollen im Portal
 
@@ -63,7 +63,7 @@ Zusätzliche npm-Pakete braucht es nicht. Wurde Node.js erst nach dem Start eine
 3. `bash tests/run.sh && bash tests/e2e-all.sh` ausführen. Alles muss grün sein.
 4. Visuell prüfen: `bash tests/shot.sh <reiter> <rolle> <breite> [dark]` erzeugt ein Bildschirmfoto in `dist/`.
 5. Einen Eintrag in `CHANGELOG.md` unter «Unveröffentlicht» ergänzen.
-6. `bash build.sh` ausführen und `dist/anforderungsportal.html` unter derselben Artifact-URL neu veröffentlichen. Die Daten bleiben dabei erhalten.
+6. Die neue Version im Changelog eintragen (die Fusszeile liest sie dort), dann `bash build.sh` ausführen und `dist/anforderungsportal.html` unter derselben Artifact-URL neu veröffentlichen. Die Daten bleiben dabei erhalten.
 7. Im Changelog aus «Unveröffentlicht» eine Version mit Datum machen, committen, das Tag `vX.Y.Z` setzen, pushen und einen Pull Request nach `main` erstellen.
 
 ### Lokale Vorschau und Testdaten

@@ -5,8 +5,8 @@
 <style>
 /* Layout: Kopfzeile mit Reitern, darunter eine Arbeitsfläche aus Panels; Detail zweispaltig, schmal einspaltig. */
 :root {
-  --bg: #F3F6F9; --surface: #FFFFFF; --surface-2: #E8EEF4; --ink: #00335A; --muted: #4F6E8A; --line: #D2DCE6;
-  --accent: #0B6CB8; --accent-ink: #FFFFFF; --focus: #E39B00;
+  --bg: #F3F6F9; --surface: #FFFFFF; --surface-2: #E8EEF4; --ink: #00335A; --muted: #4F6E8A; --line: #9FC6DF;
+  --accent: #006FB9; --accent-2: #0076B8; --head-bg: #00335A; --head-fg: #FFFFFF; --row-alt: #F5F7F8; --accent-ink: #FFFFFF; --focus: #E39B00;
   --ok: #1D7A4C; --warn: #9A5B00; --bad: #B3261E;
   --font: "Rubik", "Segoe UI", system-ui, -apple-system, sans-serif;
   --r: 6px;
@@ -15,14 +15,14 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]):not([data-portal-theme="light"]) {
     --bg: #0A1622; --surface: #102236; --surface-2: #17304A; --ink: #E2ECF6; --muted: #9AB3C9; --line: #25405C;
-    --accent: #5BADF0; --accent-ink: #04121F; --focus: #F7C24A; --ok: #5CC28E; --warn: #E3A94B; --bad: #F08A80;
+    --accent: #5BADF0; --accent-2: #7DBDF0; --head-bg: #17304A; --head-fg: #E2ECF6; --row-alt: #13283F; --accent-ink: #04121F; --focus: #F7C24A; --ok: #5CC28E; --warn: #E3A94B; --bad: #F08A80;
     color-scheme: dark;
   }
 }
 /* Die Wahl im Portal (data-portal-theme) geht der Vorgabe von claude.ai (data-theme) vor. */
 :root[data-theme="dark"]:not([data-portal-theme="light"]), :root[data-portal-theme="dark"] {
   --bg: #0A1622; --surface: #102236; --surface-2: #17304A; --ink: #E2ECF6; --muted: #9AB3C9; --line: #25405C;
-  --accent: #5BADF0; --accent-ink: #04121F; --focus: #F7C24A; --ok: #5CC28E; --warn: #E3A94B; --bad: #F08A80;
+  --accent: #5BADF0; --accent-2: #7DBDF0; --head-bg: #17304A; --head-fg: #E2ECF6; --row-alt: #13283F; --accent-ink: #04121F; --focus: #F7C24A; --ok: #5CC28E; --warn: #E3A94B; --bad: #F08A80;
   color-scheme: dark;
 }
 *, *::before, *::after { box-sizing: border-box; }
@@ -31,7 +31,7 @@ body { margin: 0; background: var(--bg); color: var(--ink); font: 400 var(--step
 .shell { max-width: 1180px; margin-inline: auto; }
 header.top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 8px 24px; padding-block: 24px 12px; }
 h1 { font-size: var(--step-2); font-weight: 600; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
-.sub { margin: 2px 0 0; color: var(--muted); }
+.sub { margin: 2px 0 0; color: var(--accent-2); }
 /* Logo unverändert (Markenvorgabe), im dunklen Modus auf weisser Fläche. */
 .brand { display: flex; align-items: center; gap: 16px; }
 .logo { display: block; height: 50px; width: auto; background: #FFFFFF; border-radius: 4px; }
@@ -48,6 +48,7 @@ nav.tabs a { padding: 10px 14px; color: var(--muted); text-decoration: none; fon
 nav.tabs a:hover { color: var(--ink); }
 nav.tabs a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--accent); }
 main { padding-block: 20px; }
+footer.site { border-top: 1px solid var(--line); padding-block: 10px; font-size: var(--step--1); color: var(--muted); }
 .banner { margin: 16px 0 0; padding: 12px 14px; border-radius: var(--r); background: color-mix(in srgb, var(--warn) 12%, var(--surface)); border: 1px solid color-mix(in srgb, var(--warn) 40%, transparent); }
 .stack { display: grid; gap: 16px; }
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; min-width: 0; }
@@ -114,7 +115,8 @@ legend { font-size: var(--step-1); font-weight: 600; padding: 0; margin-bottom: 
 .tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
 table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
 th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
-th { font-size: var(--step--1); font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+th { font-size: var(--step--1); font-weight: 600; color: var(--head-fg); background: var(--head-bg); white-space: nowrap; }
+tbody tr:nth-child(even) td { background: var(--row-alt); }
 tbody tr:last-child td { border-bottom: 0; }
 tr.click { cursor: pointer; }
 tr.click:hover td, tr.click:focus-visible td { background: var(--surface-2); }
@@ -140,7 +142,7 @@ th.num, td.num { text-align: right; }
 .prose p { margin: 0 0 10px; white-space: pre-wrap; max-width: 68ch; overflow-wrap: anywhere; }
 .prose ul { margin: 0 0 10px; padding-left: 1.2em; }
 dl.kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin: 0; }
-dl.kv dt { color: var(--muted); }
+dl.kv dt { color: var(--ink); font-weight: 500; }
 dl.kv dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
 .history { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
 .history li { display: grid; gap: 2px; font-size: var(--step--1); }
@@ -217,6 +219,7 @@ dialog::backdrop { background: rgb(0 20 40 / 0.45); }
   </nav>
   <div id="banner" class="banner" role="status" hidden></div>
   <main id="view"><p class="empty">Portal wird geladen …</p></main>
+  <footer class="site">EW Höfe AG | CRM-Anforderungsportal · Version {{VERSION}}</footer>
 </div>
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 <dialog id="confirm">
