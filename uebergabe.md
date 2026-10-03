@@ -32,8 +32,7 @@ Das Artifact gehört dem claude.ai-Konto von Roger Oettli. Veröffentlichen, fre
   - Es gibt eine Anforderung, #1 «Telekom ist cool». Das ist ein Testeintrag.
   - Testdaten aus der Entwicklung sind keine in der Datenbank.
 - **Git:**
-  - `main` enthält Version 0.1.0 sowie README und Changelog (Pull Requests #1 und #2).
-  - Die Versionen 0.2.0 bis 0.3.1 und diese Übergabe liegen auf `feature/anforderungsportal` und kommen mit einem weiteren Pull Request nach `main`.
+  - `main` entspricht dem veröffentlichten Stand 0.3.1, inklusive dieser Übergabe (Pull Requests #1 bis #3).
   - Für jede Version gibt es ein Tag (`v0.1.0` bis `v0.3.1`).
 - **Tests:** Alle grün, Stand 0.3.1: 39 Logik-Tests, 4 UI-Tests und 35 Klicktestläufe.
 
@@ -98,11 +97,10 @@ Zusätzliche npm-Pakete braucht es nicht. Wurde Node.js erst nach dem Start eine
 ## 7. Offene Punkte
 
 ### Als Nächstes zu tun
-1. **`main` nachführen:** Den Pull Request mit den Versionen 0.2.0 bis 0.3.1 und dieser Übergabe zusammenführen.
-2. **Portal freigeben:** Über «Teilen» die Einreichenden und das Release Board als Contributor eintragen, Mitlesende als Viewer.
-3. **Release Board einrichten:** Unter «Einstellungen» die Mitglieder und das erste Release mit seiner Kapazität erfassen. **Achtung:** Heute hat das Release Board 1 Mitglied bei einer Mindestanzahl von 3 Bewertungen. Solange es weniger Mitglieder als die Mindestanzahl gibt, erreicht keine Anforderung den Status «Bewertet». Entweder Mitglieder ergänzen oder die Mindestanzahl senken.
-4. **Wertelisten prüfen:** Abteilungen, CRM-Bereiche und Systeme stammen teilweise aus Vorschlägen und sollten zur EW Höfe AG passen.
-5. **Testeinträge entfernen:** Vor dem Start des Pilots die Anforderung #1 «Telekom ist cool» und andere Probeeinträge löschen. Im Portal selbst geht das derzeit nicht, nur direkt in der Datenbank des Artifacts, zum Beispiel über Claude Code. Danach beginnt die Laufnummer wieder bei 1.
+1. **Portal freigeben:** Über «Teilen» die Einreichenden und das Release Board als Contributor eintragen, Mitlesende als Viewer.
+2. **Release Board einrichten:** Unter «Einstellungen» die Mitglieder und das erste Release mit seiner Kapazität erfassen. **Achtung:** Heute hat das Release Board 1 Mitglied bei einer Mindestanzahl von 3 Bewertungen. Solange es weniger Mitglieder als die Mindestanzahl gibt, erreicht keine Anforderung den Status «Bewertet». Entweder Mitglieder ergänzen oder die Mindestanzahl senken.
+3. **Wertelisten prüfen:** Abteilungen, CRM-Bereiche und Systeme stammen teilweise aus Vorschlägen und sollten zur EW Höfe AG passen.
+4. **Testeinträge entfernen:** Vor dem Start des Pilots die Anforderung #1 «Telekom ist cool» und andere Probeeinträge löschen. Im Portal selbst geht das derzeit nicht, nur direkt in der Datenbank des Artifacts, zum Beispiel über Claude Code. Danach beginnt die Laufnummer wieder bei 1.
 
 ### Bekannte Einschränkungen des Pilots
 - Rollen und Statuswechsel sichert nur die Oberfläche. Technisch kann jeder Contributor Anforderungen direkt in der Datenbank ändern.
