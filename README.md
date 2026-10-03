@@ -15,7 +15,7 @@ Das Portal ist eine einzelne HTML-Seite und läuft als claude.ai-Artifact. Die D
 | Bereich | Inhalt |
 |---|---|
 | Einreichen | Geführtes Formular in vier Schritten: Worum geht es, Pain, Gain, Systeme. Es zeigt die Vollständigkeit an und berechnet das Einsparpotenzial in Stunden pro Jahr. Eine Hilfespalte zeigt Tipps, den weiteren Ablauf und die eigenen Anforderungen. |
-| Anforderungen | Liste mit Suche und Filtern. Die Detailansicht zeigt den Statusverlauf, Rückfragen und die Bewertung durch das Release Board. |
+| Anforderungen | Liste mit Suche und Filtern. Hinweise auf Neuigkeiten seit dem letzten Besuch (Zahl am Reiter, Box über der Liste). Die Detailansicht zeigt den Statusverlauf, Rückfragen und die Bewertung durch das Release Board. |
 | Auswertung | Kennzahlen, Nutzen/Aufwand-Matrix, Rangliste nach Score, Verteilungen und Ablösepotenzial der genannten Systeme. |
 | Roadmap | Releases mit Kapazität in Aufwandspunkten. Zuordnung per Drag & Drop oder Auswahl, automatischer Vorschlag nach Score, Auslieferung eines Release. |
 | Darstellung | Umschalter in der Kopfzeile: «System», «Hell» oder «Dunkel». Die Wahl gilt pro Person und Browser. |

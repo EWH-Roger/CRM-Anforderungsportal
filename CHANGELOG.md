@@ -6,7 +6,14 @@ Das Format folgt [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), die V
 
 ## [Unveröffentlicht]
 
+## [0.4.0] - 2026-10-03
+
 ### Hinzugefügt
+- **Hinweise im Portal:** Am Reiter «Anforderungen» steht eine Zahl mit den Neuigkeiten seit dem letzten Besuch, oben in der Liste eine Box «Neu seit Ihrem letzten Besuch». Jeder Eintrag öffnet die Anforderung, «Als gelesen markieren» leert die Box.
+  - Product Owner: neue und erneut eingereichte Anforderungen
+  - Release Board: zur Bewertung freigegebene Anforderungen, die das Mitglied noch nicht bewertet hat
+  - Einreichende: Statuswechsel der eigenen Anforderungen, bei Rückfragen mit dem Fragetext
+  - Eigene Aktionen lösen keinen Hinweis aus. Beim ersten Besuch werden keine alten Einträge als neu gezeigt.
 - Übergabedokument [uebergabe.md](uebergabe.md) mit Stand, Arbeitsweise, Entscheiden und offenen Punkten.
 
 ## [0.3.1] - 2026-10-02
@@ -85,7 +92,8 @@ Erste Version für den Pilot, veröffentlicht als privates claude.ai-Artifact.
 - Eine Anforderung liess sich bearbeiten, nachdem sie bereits in Bewertung war. Statuswechsel mit veraltetem Stand konnten Einträge im Verlauf verlieren.
 - Lesende und nicht angemeldete Personen konnten Formularfelder ausfüllen.
 
-[Unveröffentlicht]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.3.1...HEAD
+[Unveröffentlicht]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.2.0...v0.2.1

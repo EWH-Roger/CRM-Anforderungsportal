@@ -44,6 +44,9 @@
       if (a.dataset.tab === tab) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
     }
     renderWho(s); renderBanner(s);
+    const n = s.ready ? Store.notifications().length : 0;
+    document.querySelector('#tabs a[data-tab="anforderungen"]').replaceChildren('Anforderungen',
+      ...(n ? [' ', UI.h('span', { class: 'badge', 'aria-label': n + ' neu' }, n)] : []));
     if (!s.ready) return;
     UI.preserve(view, () => VIEWS[tab].render(view, s));
   }

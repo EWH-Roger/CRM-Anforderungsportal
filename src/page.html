@@ -124,6 +124,10 @@ th.num, td.num { text-align: right; }
 .s-bewertung, .s-bewertet { --c: var(--accent); }
 .s-eingeplant, .s-umgesetzt { --c: var(--ok); }
 .s-abgelehnt { --c: var(--bad); }
+.badge { display: inline-block; min-width: 1.4em; padding: 0 6px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font-size: var(--step--1); text-align: center; font-variant-numeric: tabular-nums; }
+.news { margin-bottom: 12px; border-color: var(--accent); }
+.news ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.news li { overflow-wrap: anywhere; }
 .chip { display: inline-block; font-size: var(--step--1); padding: 1px 8px; border-radius: 4px; background: var(--surface-2); color: var(--ink); }
 .detail { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 16px; align-items: start; }
 @media (max-width: 920px) { .detail { grid-template-columns: minmax(0, 1fr); } }
