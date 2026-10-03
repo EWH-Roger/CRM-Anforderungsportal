@@ -61,6 +61,7 @@ src/            Quelltext der Seite
   view-*.js     die fünf Ansichten
   main.js       Navigation und Start
 tests/          Tests, Mock der Plattform, Hilfsskripte
+assets/         EWH-Logo (wird beim Build als data-URI eingebettet)
 build.sh        setzt src/ zu dist/anforderungsportal.html zusammen
 docs/           Spezifikation und Umsetzungsplan
 ```

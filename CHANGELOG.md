@@ -6,6 +6,11 @@ Das Format folgt [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), die V
 
 ## [Unveröffentlicht]
 
+## [0.5.0] - 2026-10-03
+
+### Hinzugefügt
+- EWH-Logo in der Kopfzeile. Gemäss Markenvorgabe bleibt es unverändert, im dunklen Modus steht es auf einer weissen Fläche. Die Datei liegt unter `assets/ewh-logo.png`, `build.sh` bettet sie in die Seite ein.
+
 ## [0.4.0] - 2026-10-03
 
 ### Hinzugefügt
@@ -92,7 +97,8 @@ Erste Version für den Pilot, veröffentlicht als privates claude.ai-Artifact.
 - Eine Anforderung liess sich bearbeiten, nachdem sie bereits in Bewertung war. Statuswechsel mit veraltetem Stand konnten Einträge im Verlauf verlieren.
 - Lesende und nicht angemeldete Personen konnten Formularfelder ausfüllen.
 
-[Unveröffentlicht]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.4.0...HEAD
+[Unveröffentlicht]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.2.1...v0.3.0

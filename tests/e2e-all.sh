@@ -12,6 +12,7 @@ run submit-layout business 1 einreichen
 run theme business 1 einreichen
 run pain-align business 1 einreichen
 run heights business 1 einreichen
+run logo business 1 einreichen
 for r in admin gremium business; do run news "$r" 1 anforderungen; done
 run rate gremium 1 r-q3
 run admin admin 1 r-q4
