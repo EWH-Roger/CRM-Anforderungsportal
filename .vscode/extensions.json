@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "ms-vscode.live-server",
+    "timonwong.shellcheck",
+    "streetsidesoftware.code-spell-checker",
+    "streetsidesoftware.code-spell-checker-german",
+    "anthropic.claude-code"
+  ]
+}

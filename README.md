@@ -70,10 +70,12 @@ docs/           Spezifikation und Umsetzungsplan
 
 ## Entwicklung
 
-**Voraussetzungen:**
-- Git Bash
+**Voraussetzungen** (Windows und macOS):
+- Bash: unter Windows Git Bash, unter macOS das Terminal
 - Node.js (getestet mit Version 24)
-- Microsoft Edge (für UI-Tests, Klicktests und Bildschirmfotos)
+- Microsoft Edge oder Google Chrome (für UI-Tests, Klicktests und Bildschirmfotos). [tests/env.sh](tests/env.sh) sucht den Browser an den üblichen Orten. Ein anderer Pfad lässt sich mit `BROWSER=...` vorgeben.
+
+VS Code schlägt beim Öffnen des Ordners die empfohlenen Erweiterungen vor (`.vscode/extensions.json`).
 
 Zusätzliche npm-Pakete braucht es nicht.
 
