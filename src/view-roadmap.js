@@ -2,7 +2,6 @@
 const RoadmapView = (() => {
   const { h } = UI;
   let proposal = null;
-  const openReq = id => { RequestsView.select(id); App.go('anforderungen'); };
 
   function render(root, st) {
     const admin = st.isAdmin;
@@ -76,7 +75,7 @@ const RoadmapView = (() => {
   function card(x, admin, openRel) {
     const { r, ev, points } = x;
     const c = h('article', { class: 'card', draggable: admin ? 'true' : null },
-      h('button', { class: 'linkbtn t', type: 'button', onclick: () => openReq(r.id) }, `#${r.number} ${r.title}`),
+      h('button', { class: 'linkbtn t', type: 'button', onclick: () => App.open(r.id) }, `#${r.number} ${r.title}`),
       h('div', { class: 'm' },
         h('span', {}, 'Score ', h('strong', {}, ev.count && Store.canSeeResults(r) ? UI.fmtNum(ev.score, 2) : '–')),
         h('span', {}, `${points ?? '–'} Punkte`),

@@ -8,7 +8,6 @@ const AnalysisView = (() => {
     for (const c of kids.flat()) if (c !== null && c !== undefined) el.append(c instanceof Node ? c : document.createTextNode(String(c)));
     return el;
   }
-  const openReq = id => { RequestsView.select(id); App.go('anforderungen'); };
 
   function render(root, st) {
     const set = Store.settings();
@@ -76,8 +75,8 @@ const AnalysisView = (() => {
         svg('circle', { class: 'hit', cx, cy, r: 16 }),
         svg('circle', { cx, cy, r: 7 }),
         withLabels ? svg('text', { x: cx + 11, y: cy + 4 }, '#' + r.number) : null);
-      pt.addEventListener('click', () => openReq(r.id));
-      pt.addEventListener('keydown', e => { if (e.key === 'Enter') openReq(r.id); });
+      pt.addEventListener('click', () => App.open(r.id));
+      pt.addEventListener('keydown', e => { if (e.key === 'Enter') App.open(r.id); });
       g.append(pt);
     }
     return g;
@@ -89,7 +88,7 @@ const AnalysisView = (() => {
     return h('section', { class: 'panel' }, h('h2', {}, 'Rangliste nach Score'),
       h('div', { class: 'tablewrap' }, h('table', {},
         h('thead', {}, h('tr', {}, ...heads.map(([t, c]) => h('th', { class: c || null }, t)))),
-        h('tbody', {}, ...rows.map(({ r, ev }, i) => h('tr', { class: 'click', tabindex: 0, onclick: () => openReq(r.id), onkeydown: e => { if (e.key === 'Enter') openReq(r.id); } },
+        h('tbody', {}, ...rows.map(({ r, ev }, i) => h('tr', { class: 'click', tabindex: 0, onclick: () => App.open(r.id), onkeydown: e => { if (e.key === 'Enter') App.open(r.id); } },
           h('td', { class: 'num' }, i + 1), h('td', { class: 'num' }, '#' + r.number), h('td', {}, r.title),
           h('td', { class: 'num' }, UI.fmtNum(ev.benefit, 2)), h('td', { class: 'num' }, UI.fmtNum(ev.effort, 2)),
           h('td', { class: 'num' }, h('strong', {}, UI.fmtNum(ev.score, 2))), h('td', {}, Logic.QUADRANT_LABEL[ev.quadrant]), h('td', {}, UI.pill(r.status))))))));

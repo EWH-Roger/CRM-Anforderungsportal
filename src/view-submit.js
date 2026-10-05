@@ -2,15 +2,13 @@
 const SubmitView = (() => {
   const { h } = UI;
   const STEPS = ['Worum geht es?', 'Pain: heutiges Problem', 'Gain: erwarteter Nutzen', 'Systeme'];
-  const KEY_TO_ID = {
-    title: 'f-title', department: 'f-department', crmArea: 'f-crmArea', 'pain.situation': 'f-situation',
-    'pain.frequency': 'f-frequency', 'pain.hoursPerWeek': 'f-hours', 'pain.persons': 'f-persons',
-    'gain.department': 'f-gainDept', 'gain.successCriterion': 'f-success', 'gain.deadlineReason': 'f-deadlineReason', links: 'f-links',
+  // Fehlerschlüssel → [Feld-ID, Schritt]
+  const FIELDS = {
+    title: ['f-title', 0], department: ['f-department', 0], crmArea: ['f-crmArea', 0], 'pain.situation': ['f-situation', 1],
+    'pain.frequency': ['f-frequency', 1], 'pain.hoursPerWeek': ['f-hours', 1], 'pain.persons': ['f-persons', 1],
+    'gain.department': ['f-gainDept', 2], 'gain.successCriterion': ['f-success', 2], 'gain.deadlineReason': ['f-deadlineReason', 2], links: ['f-links', 3],
   };
-  const STEP_OF = {
-    title: 0, department: 0, crmArea: 0, 'pain.situation': 1, 'pain.frequency': 1, 'pain.hoursPerWeek': 1, 'pain.persons': 1,
-    'gain.department': 2, 'gain.successCriterion': 2, 'gain.deadlineReason': 2, links: 3,
-  };
+  const KEY_TO_ID = Object.fromEntries(Object.entries(FIELDS).map(([k, [id]]) => [k, id]));
   let step = 0, repRows = 1, done = null, editing = null, draft = null, busy = false;
 
   const empty = () => ({
@@ -142,7 +140,7 @@ const SubmitView = (() => {
   }
   function next(form) {
     const res = Logic.validateSubmission(normalize(collect(form)));
-    const errs = Object.fromEntries(Object.entries(res.errors).filter(([k]) => STEP_OF[k] === step));
+    const errs = Object.fromEntries(Object.entries(res.errors).filter(([k]) => FIELDS[k][1] === step));
     UI.showErrors(form, errs, KEY_TO_ID);
     if (Object.keys(errs).length) { const bad = form.querySelector('[aria-invalid="true"]'); if (bad) bad.focus(); return; }
     step++; showStep(form); form.scrollIntoView({ block: 'start' });
@@ -154,7 +152,7 @@ const SubmitView = (() => {
     const res = Logic.validateSubmission(data);
     UI.showErrors(form, res.errors, KEY_TO_ID);
     if (!res.valid) {
-      step = Math.min(...Object.keys(res.errors).map(k => STEP_OF[k]));
+      step = Math.min(...Object.keys(res.errors).map(k => FIELDS[k][1]));
       showStep(form);
       UI.toast('Bitte die markierten Felder ergänzen.', 'err');
       const bad = form.querySelector('fieldset:not([hidden]) [aria-invalid="true"]'); if (bad) bad.focus();
@@ -188,7 +186,7 @@ const SubmitView = (() => {
       h('h2', {}, d.edited ? `Änderungen an #${d.number} gespeichert` : `Anforderung #${d.number} eingereicht`),
       h('p', { class: 'note' }, d.edited ? 'Der Product Owner sieht die aktualisierten Angaben.' : 'Danke. Den Status verfolgen Sie unter «Anforderungen». Rückfragen erscheinen ebenfalls dort.'),
       h('div', { class: 'row', style: 'margin-top:16px' },
-        h('button', { class: 'btn', type: 'button', onclick: () => { done = null; RequestsView.select(d.id); App.go('anforderungen'); } }, 'Anforderung ansehen'),
+        h('button', { class: 'btn', type: 'button', onclick: () => { done = null; App.open(d.id); } }, 'Anforderung ansehen'),
         h('button', { class: 'btn ghost', type: 'button', onclick: () => { done = null; App.render(); } }, 'Weitere Anforderung einreichen')));
   }
 
@@ -228,7 +226,6 @@ const SubmitView = (() => {
   // Hilfespalte: Tipps, Ablauf und die eigenen Einreichungen.
   function aside(st) {
     const mine = st.me.id ? st.requests.filter(r => r.submittedBy === st.me.id).sort((a, b) => b.number - a.number) : [];
-    const open = r => { RequestsView.select(r.id); App.go('anforderungen'); };
     return h('aside', { class: 'submit-aside stack' },
       h('section', { class: 'panel' }, h('h2', {}, 'So wird Ihre Anforderung gut'),
         h('ul', { class: 'tips' },
@@ -245,7 +242,7 @@ const SubmitView = (() => {
       st.me.id ? h('section', { class: 'panel' }, h('h2', {}, 'Meine Anforderungen'),
         mine.length
           ? h('ul', { class: 'mine' }, ...mine.slice(0, 5).map(r => h('li', {},
-              h('button', { class: 'linkbtn', type: 'button', onclick: () => open(r) }, `#${r.number} ${r.title}`), UI.pill(r.status))))
+              h('button', { class: 'linkbtn', type: 'button', onclick: () => App.open(r.id) }, `#${r.number} ${r.title}`), UI.pill(r.status))))
           : h('p', { class: 'hint' }, 'Sie haben noch keine Anforderung eingereicht.'),
         mine.length > 5 ? h('p', { class: 'hint', style: 'margin-top:8px' }, `Alle ${mine.length} finden Sie unter «Anforderungen» mit dem Filter «Nur meine».`) : null) : null);
   }
