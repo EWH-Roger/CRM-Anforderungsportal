@@ -6,6 +6,10 @@ Das Format folgt [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), die V
 
 ## [Unveröffentlicht]
 
+### Geändert
+- Build und Tests laufen unter Windows und macOS. `tests/env.sh` sucht Edge, Chrome oder Brave, ein anderer Browser lässt sich mit `BROWSER=...` vorgeben.
+- Kleinere Vereinfachungen im Code und im Test-Mock, ohne sichtbare Änderung im Portal.
+
 ## [0.8.0] - 2026-10-03
 
 ### Hinzugefügt
