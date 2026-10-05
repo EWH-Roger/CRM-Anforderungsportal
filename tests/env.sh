@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Plattformunabhängige Pfade für Windows (Git Bash), macOS und Linux. Wird per «source» geladen.
-# Setzt BROWSER (Edge oder Chrome, headless), NODE und die Funktion file_url <pfad>.
+# Setzt BROWSER (Edge, Chrome oder Brave, headless), NODE und die Funktion file_url <pfad>.
 # Ein anderer Browser lässt sich mit der Umgebungsvariable BROWSER vorgeben.
 
 if [ -z "${BROWSER:-}" ]; then
@@ -10,13 +10,15 @@ if [ -z "${BROWSER:-}" ]; then
     "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge" \
     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
     "/c/Program Files/Google/Chrome/Application/chrome.exe" \
+    "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser" \
+    "/c/Program Files/BraveSoftware/Brave-Browser/Application/brave.exe" \
     "$(command -v microsoft-edge 2>/dev/null)" \
     "$(command -v google-chrome 2>/dev/null)" \
     "$(command -v chromium 2>/dev/null)"; do
     [ -n "$b" ] && [ -x "$b" ] && { BROWSER="$b"; break; }
   done
 fi
-[ -n "${BROWSER:-}" ] || { echo "FEHLER: Kein Browser gefunden (Edge oder Chrome). Pfad mit BROWSER=... vorgeben." >&2; exit 1; }
+[ -n "${BROWSER:-}" ] || { echo "FEHLER: Kein Browser gefunden (Edge, Chrome oder Brave). Pfad mit BROWSER=... vorgeben." >&2; exit 1; }
 
 NODE="$(command -v node || echo "/c/Program Files/nodejs/node.exe")"
 
