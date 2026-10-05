@@ -19,8 +19,8 @@
   function renderWho(s) {
     const el = document.getElementById('who');
     if (!s.me.id) { el.replaceChildren(); return; }
-    const roles = [s.isAdmin && 'Product Owner', Store.isCommittee() && 'Release Board'].filter(Boolean).join(' · ') || (s.canWrite === false ? 'Lesezugriff' : 'Einreichende');
-    el.replaceChildren(UI.h('strong', {}, s.me.name || 'Angemeldet'), ' · ' + roles);
+    const roles = [s.isAdmin && 'Product Owner', Store.isCommittee() && 'Release Board'].filter(Boolean).join(', ') || (s.canWrite === false ? 'Lesezugriff' : 'Einreichende');
+    el.replaceChildren(UI.h('strong', {}, s.me.name || 'Angemeldet'), ' (' + roles + ')');
   }
   function renderBanner(s) {
     const el = document.getElementById('banner');
@@ -29,6 +29,8 @@
     else if (s.ready && !s.me.id) msg = 'Bitte melden Sie sich in claude.ai an, um Anforderungen einzureichen und zu bewerten.';
     else if (s.ready && s.canWrite === false) {
       msg = 'Sie haben Lesezugriff. Zum Einreichen und Bewerten braucht es die Freigabe «Contributor». Bitte beim Product Owner melden.';
+    } else if (s.ready && s.isAdmin && s.settings && Logic.backupDue(s.settings.lastExportAt, new Date().toISOString())) {
+      msg = 'Datensicherung: Die Daten wurden seit über 30 Tagen nicht exportiert. Bitte unter «Einstellungen» die Daten als CSV exportieren und ablegen.';
     } else if (s.ready && s.db && s.loaded.settings && !s.settings) {
       msg = s.isAdmin
         ? 'Das Portal ist noch nicht eingerichtet. Bitte unter «Einstellungen» die Wertelisten prüfen und speichern.'

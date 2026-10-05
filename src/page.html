@@ -6,7 +6,7 @@
 /* Layout: Kopfzeile mit Reitern, darunter eine Arbeitsfläche aus Panels; Detail zweispaltig, schmal einspaltig. */
 :root {
   --bg: #F3F6F9; --surface: #FFFFFF; --surface-2: #E8EEF4; --ink: #00335A; --muted: #4F6E8A; --line: #9FC6DF;
-  --accent: #006FB9; --accent-2: #0076B8; --head-bg: #00335A; --head-fg: #FFFFFF; --row-alt: #F5F7F8; --accent-ink: #FFFFFF; --focus: #E39B00;
+  --accent: #006FB9; --accent-2: #0076B8; --field-border: #5F8AB0; --head-bg: #00335A; --head-fg: #FFFFFF; --row-alt: #F5F7F8; --accent-ink: #FFFFFF; --focus: #E39B00;
   --ok: #1D7A4C; --warn: #9A5B00; --bad: #B3261E;
   --font: "Rubik", "Segoe UI", system-ui, -apple-system, sans-serif;
   --r: 6px;
@@ -15,7 +15,7 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]):not([data-portal-theme="light"]) {
     --bg: #0A1622; --surface: #102236; --surface-2: #17304A; --ink: #E2ECF6; --muted: #9AB3C9; --line: #25405C;
-    --accent: #5BADF0; --accent-2: #7DBDF0; --head-bg: #17304A; --head-fg: #E2ECF6; --row-alt: #13283F; --accent-ink: #04121F; --focus: #F7C24A; --ok: #5CC28E; --warn: #E3A94B; --bad: #F08A80;
+    --accent: #5BADF0; --accent-2: #7DBDF0; --field-border: #6E8FB0; --head-bg: #17304A; --head-fg: #E2ECF6; --row-alt: #13283F; --accent-ink: #04121F; --focus: #F7C24A; --ok: #5CC28E; --warn: #E3A94B; --bad: #F08A80;
     color-scheme: dark;
   }
 }
@@ -65,7 +65,7 @@ footer.site { border-top: 1px solid var(--line); padding-block: 10px; font-size:
 .mine .linkbtn { min-width: 0; overflow-wrap: anywhere; }
 .panel h2 { font-size: var(--step-1); font-weight: 600; margin: 0 0 12px; text-wrap: balance; }
 h3 { font-size: var(--step-0); font-weight: 600; margin: 0 0 8px; }
-.eyebrow { font-size: var(--step--1); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 500; margin: 0; }
+.eyebrow { font-size: var(--step--1); color: var(--ink); font-weight: 600; margin: 0; }
 .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .row.end { justify-content: flex-end; }
 .spread { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
@@ -81,7 +81,7 @@ h3 { font-size: var(--step-0); font-weight: 600; margin: 0 0 8px; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .err { margin: 0; color: var(--bad); font-size: var(--step--1); }
 input[type="text"], input[type="search"], input[type="date"], select, textarea {
-  font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 8px 10px; width: 100%; min-width: 0;
+  font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--field-border); border-radius: 4px; padding: 8px 10px; width: 100%; min-width: 0;
 }
 textarea { resize: vertical; min-height: 4.5em; }
 input[type="text"], input[type="search"], input[type="date"], select { height: 2.6rem; }
@@ -138,9 +138,28 @@ th.num, td.num { text-align: right; }
 @media (max-width: 920px) { .detail { grid-template-columns: minmax(0, 1fr); } }
 .detail-head { display: grid; gap: 6px; margin-bottom: 16px; }
 .detail-head h2 { font-size: var(--step-2); margin: 0; font-weight: 600; text-wrap: balance; }
+.facts { display: flex; flex-wrap: wrap; gap: 4px 20px; margin: 0; font-size: var(--step--1); color: var(--muted); }
+.facts dt { display: inline; font-weight: 500; color: var(--ink); }
+.facts dd { display: inline; margin: 0 0 0 6px; }
+.decision { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 0; margin-bottom: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
+.decision > div { padding: 12px 16px; display: grid; gap: 2px; align-content: start; }
+.decision > div + div { border-left: 1px solid var(--line); }
+.decision .k { font-size: var(--step--1); color: var(--muted); }
+.decision .v { font-size: var(--step-2); font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.decision .v.small { font-size: var(--step-1); }
+.content h3 { margin-top: 20px; }
+.content h3:first-child { margin-top: 0; }
+.mini-matrix { display: block; width: 100%; max-width: 260px; height: auto; margin-top: 8px; }
+.mini-matrix .frame { fill: none; stroke: var(--line); }
+.mini-matrix .divider { stroke: var(--muted); stroke-dasharray: 3 3; }
+.mini-matrix .other { fill: var(--muted); opacity: 0.45; }
+.mini-matrix .current { fill: var(--accent); stroke: var(--surface); stroke-width: 2; }
+.mini-matrix text { fill: var(--muted); font: 400 10px var(--font); }
 .meta { color: var(--muted); font-size: var(--step--1); margin: 0; }
 .prose p { margin: 0 0 10px; white-space: pre-wrap; max-width: 68ch; overflow-wrap: anywhere; }
 .prose ul { margin: 0 0 10px; padding-left: 1.2em; }
+.acceptance { list-style: '☐  '; }
+.disagree { color: var(--warn); font-weight: 500; }
 dl.kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin: 0; }
 dl.kv dt { color: var(--ink); font-weight: 500; }
 dl.kv dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
@@ -219,7 +238,7 @@ dialog::backdrop { background: rgb(0 20 40 / 0.45); }
   </nav>
   <div id="banner" class="banner" role="status" hidden></div>
   <main id="view"><p class="empty">Portal wird geladen …</p></main>
-  <footer class="site">EW Höfe AG | CRM-Anforderungsportal · Version {{VERSION}}</footer>
+  <footer class="site">EW Höfe AG | CRM-Anforderungsportal | Version {{VERSION}}</footer>
 </div>
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 <dialog id="confirm">

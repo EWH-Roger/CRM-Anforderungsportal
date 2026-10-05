@@ -1,6 +1,6 @@
 # Übergabe CRM-Anforderungsportal
 
-Stand: 03.10.2026, Version 0.6.0
+Stand: 03.10.2026, Version 0.8.0
 
 Dieses Dokument ist für alle, die das Portal betreuen oder weiterentwickeln, auch für eine neue Claude-Sitzung. Es fasst zusammen, wo alles liegt, was der aktuelle Stand ist und was als Nächstes ansteht. Die fachliche Beschreibung steht in der [README](README.md), die Änderungen pro Version im [Changelog](CHANGELOG.md).
 
@@ -24,7 +24,7 @@ Das Artifact gehört dem claude.ai-Konto von Roger Oettli. Veröffentlichen, fre
 
 ## 3. Aktueller Stand
 
-- **Live:** Version 0.6.0, auf claude.ai Version 8 des Artifacts. Die laufende Version steht in der Fusszeile des Portals.
+- **Live:** Version 0.8.0, auf claude.ai Version 10 des Artifacts. Die laufende Version steht in der Fusszeile des Portals.
 - **Freigabe:** Das Artifact ist privat. Ausser dem Owner kann es niemand öffnen, bis es über «Teilen» freigegeben wird.
 - **Daten (geprüft am 02.10.2026):**
   - Die Einstellungen sind gespeichert, mit eigenen Abteilungen (u. a. Telekom, Energie, Fernwärme, Gas, Elektrizität) und Systemen (u. a. Innosolv, Hubspot, Freshdesk).
@@ -32,9 +32,9 @@ Das Artifact gehört dem claude.ai-Konto von Roger Oettli. Veröffentlichen, fre
   - Es gibt eine Anforderung, #1 «Telekom ist cool». Das ist ein Testeintrag.
   - Testdaten aus der Entwicklung sind keine in der Datenbank.
 - **Git:**
-  - Die Versionen 0.4.0 bis 0.6.0 liegen auf `feature/anforderungsportal` und kommen mit Pull Request #4 nach `main`. Bis 0.3.1 ist `main` aktuell (Pull Requests #1 bis #3).
-  - Für jede Version gibt es ein Tag (`v0.1.0` bis `v0.6.0`).
-- **Tests:** Alle grün, Stand 0.6.0: 44 Logik-Tests, 4 UI-Tests und 40 Klicktestläufe.
+  - Die Versionen 0.4.0 bis 0.8.0 liegen auf `feature/anforderungsportal` und kommen mit Pull Request #4 nach `main`. Bis 0.3.1 ist `main` aktuell (Pull Requests #1 bis #3).
+  - Für jede Version gibt es ein Tag (`v0.1.0` bis `v0.8.0`).
+- **Tests:** Alle grün, Stand 0.8.0: 48 Logik-Tests, 4 UI-Tests und 42 Klicktestläufe. Begriffe: siehe Glossar in der README.
 
 ## 4. Rollen im Portal
 
@@ -81,18 +81,25 @@ Zusätzliche npm-Pakete braucht es nicht. Wurde Node.js erst nach dem Start eine
 - In der Datenbank werden nur Benutzer-IDs gespeichert. Namen werden beim Anzeigen aufgelöst.
 - Die Datenbankregeln werden beim Veröffentlichen mitgegeben und beim Neuveröffentlichen übernommen. Sie stehen in der README unter «Datenmodell».
 
+### Datensicherung (Routine)
+- Mindestens monatlich unter «Einstellungen» → «CSV exportieren» und die zwei Dateien gesichert ablegen, etwa auf SharePoint.
+- Das Portal zeigt den letzten Export an und erinnert den Product Owner nach 30 Tagen.
+- Bis zum ersten Export erscheint der Hinweis sofort.
+
 ## 6. Wichtige Entscheide
 
 - **Plattform:** ein Pilot als claude.ai-Artifact statt Microsoft 365 oder einer eigenen Webanwendung. Das ging schnell und ohne Betriebsaufwand, setzt aber ein claude.ai-Konto bei allen Beteiligten voraus.
 - **Bewertung:** Nutzen/Aufwand-Matrix mit fünf Kriterien, 1 bis 5. Score = gewichteter Nutzen-Index ÷ Ø Aufwand.
 - **Release Board:** Mehrere Personen bewerten, das Portal bildet den Durchschnitt. Es zählen nur aktuelle Mitglieder. Die Bewertung ist blind: Ein Mitglied sieht die Ergebnisse erst nach der eigenen Bewertung.
-- **Roadmap:** nach Releases mit Kapazität in Aufwandspunkten, mit automatischem Vorschlag nach Score.
+- **Roadmap:** nach Releases mit Kapazität in Aufwandspunkten, mit automatischem Vorschlag nach Score. Der Vorschlag lässt eine Reserve frei, standardmässig 20 %.
+- **Akzeptanzkriterien und Uneinigkeit (ab 0.7.0):** Der Product Owner erfasst Akzeptanzkriterien vor der Bewertung. Liegen Bewertungen 3 oder mehr Punkte auseinander, wird die Anforderung zur Besprechung markiert.
 - **Bewusst nicht im Pilot:**
   - KI-Qualitätscheck der Einreichung
   - Datei-Anhänge (stattdessen Links)
   - Benachrichtigungen
   - serverseitige Rollen- und Statusprüfung
   - Anbindung an das CRM
+- **Zielgeräte:** Das Portal wird am Computer genutzt. Smartphone ist kein Ziel (Entscheid vom 03.10.2026). Auf schmalen Bildschirmen bleibt es bedienbar, Tabellen scrollen dort seitlich. Eine eigene mobile Darstellung, etwa die Liste als Karten, ist bewusst nicht vorgesehen.
 - **Begriffe:** Seit Version 0.2.1 heissen die Rollen «Release Board» und «Product Owner». Die Spezifikation in `docs/` verwendet noch die alten Begriffe «Gremium» und «Administration». Sie ist als Dokument des ursprünglichen Entwurfs unverändert geblieben.
 
 ## 7. Offene Punkte

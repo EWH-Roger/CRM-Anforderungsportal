@@ -79,7 +79,7 @@ const RequestsView = (() => {
         h('button', { class: 'btn ghost small', type: 'button', onclick: () => Store.markSeen() }, 'Als gelesen markieren')),
       h('ul', {}, ...news.slice(0, 10).map(n => h('li', {},
         h('button', { class: 'linkbtn', type: 'button', onclick: () => open(n.requestId) }, `#${n.number} ${n.title}`),
-        h('span', { class: 'meta' }, ` · ${n.text} · ${UI.fmtDateTime(n.at)}`)))),
+        h('div', { class: 'meta' }, `${n.text}, ${UI.fmtDateTime(n.at)}`)))),
       news.length > 10 ? h('p', { class: 'hint' }, `und ${news.length - 10} weitere`) : null);
   }
 
@@ -95,50 +95,63 @@ const RequestsView = (() => {
     const results = Store.canSeeResults(r) && ev.count > 0;
     const canEditReq = (r.submittedBy === st.me.id || st.isAdmin) && ['eingereicht', 'klaerung'].includes(r.status) && st.canWrite !== false;
     const p = r.pain || {}, g = r.gain || {}, sy = r.systems || {};
-    const sec = (title, ...body) => h('section', { class: 'panel prose' }, h('h3', {}, title), ...body);
+    // Inhalt der Anforderung in einer Box, gegliedert durch Zwischentitel statt vieler Boxen.
+    const part = (title, ...body) => [h('h3', {}, title), ...body];
     const para = (label, value) => value ? h('div', {}, h('p', { class: 'eyebrow' }, label), h('p', {}, value)) : null;
+    const acceptance = Logic.acceptanceList(r.acceptanceCriteria);
+    const fact = (k, v) => [h('dt', {}, k), h('dd', {}, v)];
 
     root.append(h('div', { class: 'detail-head' },
-      h('div', {}, h('button', { class: 'linkbtn', type: 'button', onclick: () => { selected = null; stopComments(); App.render(); } }, '← Alle Anforderungen')),
-      h('div', { class: 'row' }, h('span', { class: 'eyebrow' }, '#' + r.number), UI.pill(r.status)),
+      h('div', {}, h('button', { class: 'linkbtn', type: 'button', onclick: () => { selected = null; stopComments(); App.render(); } }, 'Zurück zur Liste')),
+      h('p', { class: 'eyebrow' }, 'Anforderung #' + r.number),
       h('h2', {}, r.title),
-      h('p', { class: 'meta' }, `${r.department} · ${r.crmArea} · eingereicht am ${UI.fmtDate(r.submittedAt)} von `, UI.nameSpan(r.submittedBy))));
+      h('dl', { class: 'facts' },
+        ...fact('Abteilung', r.department), ...fact('CRM-Bereich', r.crmArea),
+        h('dt', {}, 'Eingereicht'), h('dd', {}, UI.fmtDate(r.submittedAt) + ' von ', UI.nameSpan(r.submittedBy)))));
+
+    // Entscheidungsleiste: die vier Werte, für die man die Seite öffnet.
+    root.append(h('div', { class: 'decision' },
+      h('div', {}, h('span', { class: 'k' }, 'Status'), h('span', {}, UI.pill(r.status))),
+      h('div', {}, h('span', { class: 'k' }, 'Score'), h('span', { class: 'v' }, results ? UI.fmtNum(ev.score, 2) : '–')),
+      h('div', {}, h('span', { class: 'k' }, 'Einordnung'), h('span', { class: 'v small' }, results ? Logic.QUADRANT_LABEL[ev.quadrant] : '–')),
+      h('div', {}, h('span', { class: 'k' }, 'Einsparpotenzial'), h('span', { class: 'v small' }, `${UI.fmtNum(Logic.savingsHoursPerYear(p, set.weeksPerYear))} h pro Jahr`))));
 
     const main = h('div', { class: 'stack' },
-      r.useCase ? sec('Use Case', h('p', {}, r.useCase)) : null,
-      sec('Pain: heutiges Problem',
-        h('p', {}, p.situation),
-        h('p', { class: 'meta' }, `${p.frequency} · ${UI.fmtNum(p.hoursPerWeek, 1)} h pro Woche und Person · ${p.persons} Personen betroffen`),
-        (p.consequences || []).length ? h('div', { class: 'row', style: 'margin-top:8px' }, ...p.consequences.map(c => h('span', { class: 'chip' }, c))) : null),
-      sec('Gain: erwarteter Nutzen',
-        para('Für die Abteilung', g.department), para('Für das Unternehmen', g.company), para('Erfolgskriterium', g.successCriterion),
-        g.deadline ? para('Frist', `${UI.fmtDate(g.deadline)}: ${g.deadlineReason}`) : null),
-      sec('Systeme',
-        para('Betroffene Systeme', (sy.affected || []).join(', ') || 'Keine Angabe'),
-        (sy.replaceable || []).length
-          ? h('div', {}, h('p', { class: 'eyebrow' }, 'Ablösbare Systeme'), h('ul', {}, ...sy.replaceable.map(x => h('li', {}, x.system, x.purpose ? `: ${x.purpose}` : ''))))
-          : para('Ablösbare Systeme', 'Keine Angabe'),
-        (r.links || []).length
-          ? h('div', {}, h('p', { class: 'eyebrow' }, 'Links'), h('ul', {}, ...r.links.map(u => h('li', {}, /^https?:\/\//i.test(u) ? h('a', { href: u, target: '_blank', rel: 'noopener' }, u) : u))))
-          : null),
+      h('section', { class: 'panel prose content' },
+        r.useCase ? part('Use Case', h('p', {}, r.useCase)) : null,
+        part('Pain: heutiges Problem',
+          h('p', {}, p.situation),
+          h('p', { class: 'meta' }, `Häufigkeit: ${p.frequency}. Aufwand: ${UI.fmtNum(p.hoursPerWeek, 1)} h pro Woche und Person, ${p.persons} Personen betroffen.`),
+          (p.consequences || []).length ? h('div', { class: 'row', style: 'margin-top:8px' }, ...p.consequences.map(c => h('span', { class: 'chip' }, c))) : null),
+        part('Gain: erwarteter Nutzen',
+          para('Für die Abteilung', g.department), para('Für das Unternehmen', g.company), para('Erfolgskriterium', g.successCriterion),
+          g.deadline ? para('Frist', `${UI.fmtDate(g.deadline)}: ${g.deadlineReason}`) : null),
+        acceptance.length ? part('Akzeptanzkriterien', h('ul', { class: 'acceptance' }, ...acceptance.map(c => h('li', {}, c)))) : null,
+        part('Systeme',
+          para('Betroffene Systeme', (sy.affected || []).join(', ') || 'Keine Angabe'),
+          (sy.replaceable || []).length
+            ? h('div', {}, h('p', { class: 'eyebrow' }, 'Ablösbare Systeme'), h('ul', {}, ...sy.replaceable.map(x => h('li', {}, x.system, x.purpose ? `: ${x.purpose}` : ''))))
+            : para('Ablösbare Systeme', 'Keine Angabe'),
+          (r.links || []).length
+            ? h('div', {}, h('p', { class: 'eyebrow' }, 'Links'), h('ul', {}, ...r.links.map(u => h('li', {}, /^https?:\/\//i.test(u) ? h('a', { href: u, target: '_blank', rel: 'noopener' }, u) : u))))
+            : null)),
       ratingSection(st, r, ev, results),
       commentSection(st, r));
 
     const resultHint = !results && ev.count > 0
       ? h('p', { class: 'hint', style: 'margin-top:8px' }, Store.isCommittee() ? 'Die Ergebnisse sehen Sie, sobald Sie selbst bewertet haben.' : 'Die Ergebnisse sind sichtbar, sobald die Bewertung abgeschlossen ist.')
       : null;
+    const rated = st.requests.map(x => ({ r: x, ev: Store.evaluation(x) })).filter(o => o.ev.count > 0 && Store.canSeeResults(o.r));
     const relName = (st.releases.find(x => x.id === r.releaseId) || {}).name;
     const aside = h('div', { class: 'stack' },
-      h('section', { class: 'panel' }, h('h3', {}, 'Kennzahlen'),
-        h('dl', { class: 'kv' },
-          h('dt', {}, 'Einsparpotenzial'), h('dd', {}, `${UI.fmtNum(Logic.savingsHoursPerYear(p, set.weeksPerYear))} h/Jahr`),
-          h('dt', {}, 'Bewertungen'), h('dd', {}, `${ev.count} von mind. ${set.minRatings}`),
-          h('dt', {}, 'Nutzen-Index'), h('dd', {}, results ? UI.fmtNum(ev.benefit, 2) : '–'),
-          h('dt', {}, 'Ø Aufwand'), h('dd', {}, results ? UI.fmtNum(ev.effort, 2) : '–'),
-          h('dt', {}, 'Score'), h('dd', {}, results ? UI.fmtNum(ev.score, 2) : '–'),
-          h('dt', {}, 'Einordnung'), h('dd', {}, results ? Logic.QUADRANT_LABEL[ev.quadrant] : '–'),
-          h('dt', {}, 'Aufwandspunkte'), h('dd', {}, results || r.effortOverride != null ? String(Store.points(r) ?? '–') : '–'),
-          h('dt', {}, 'Release'), h('dd', {}, relName || '–')),
+      h('section', { class: 'panel' }, h('h3', {}, 'Bewertung im Überblick'),
+        results ? AnalysisView.miniMatrix(rated, r.id) : null,
+        h('dl', { class: 'kv', style: 'margin-top:12px' },
+          ...fact('Bewertungen', `${ev.count} von mind. ${set.minRatings}`),
+          ...fact('Nutzen-Index', results ? UI.fmtNum(ev.benefit, 2) : '–'),
+          ...fact('Ø Aufwand', results ? UI.fmtNum(ev.effort, 2) : '–'),
+          ...fact('Aufwandspunkte', results || r.effortOverride != null ? String(Store.points(r) ?? '–') : '–'),
+          ...fact('Release', relName || '–')),
         resultHint,
         r.decisionReason ? h('p', { style: 'margin:12px 0 0' }, h('strong', {}, 'Begründung: '), r.decisionReason) : null),
       canEditReq ? h('section', { class: 'panel' },
@@ -150,7 +163,7 @@ const RequestsView = (() => {
       h('section', { class: 'panel' }, h('h3', {}, 'Statusverlauf'),
         h('ol', { class: 'history' }, ...[...(r.statusHistory || [])].reverse().map(e => h('li', {},
           h('div', {}, UI.pill(e.status)),
-          h('span', { class: 'meta' }, UI.fmtDateTime(e.at), ' · ', UI.nameSpan(e.by)),
+          h('span', { class: 'meta' }, UI.fmtDateTime(e.at), ', ', UI.nameSpan(e.by)),
           e.comment ? h('span', {}, e.comment) : null)))));
 
     root.append(h('div', { class: 'detail' }, main, aside));
@@ -191,6 +204,8 @@ const RequestsView = (() => {
         h('tbody', {}, ...Logic.CRITERIA.map(k => h('tr', {}, h('td', {}, Logic.CRITERIA_LABEL[k]),
           ...ids.map(id => h('td', { class: 'num' }, ev.ratings[id][k])),
           h('td', { class: 'num' }, h('strong', {}, UI.fmtNum(ev.avg[k], 1)))))))));
+      const split = Logic.disagreement(ev.ratings);
+      if (split.length) sec.append(h('p', { class: 'hint disagree', style: 'margin-top:8px' }, `Grosse Uneinigkeit bei ${split.map(k => Logic.CRITERIA_LABEL[k]).join(', ')} (3 oder mehr Punkte Abstand). Vor der Einplanung im Release Board besprechen.`));
       const notes = ids.filter(id => ev.ratings[id].comment);
       if (notes.length) sec.append(h('ul', { class: 'posts', style: 'margin-top:12px' }, ...notes.map(id =>
         h('li', {}, h('p', { class: 'meta' }, UI.nameSpan(id)), h('p', { class: 'body' }, ev.ratings[id].comment)))));
@@ -201,7 +216,7 @@ const RequestsView = (() => {
   function commentSection(st, r) {
     const sec = h('section', { class: 'panel' }, h('h3', {}, 'Rückfragen und Antworten'));
     sec.append(comments.length
-      ? h('ul', { class: 'posts' }, ...comments.map(c => h('li', {}, h('p', { class: 'meta' }, UI.nameSpan(c.by), ' · ', UI.fmtDateTime(c.at)), h('p', { class: 'body' }, c.text))))
+      ? h('ul', { class: 'posts' }, ...comments.map(c => h('li', {}, h('p', { class: 'meta' }, UI.nameSpan(c.by), ', ', UI.fmtDateTime(c.at)), h('p', { class: 'body' }, c.text))))
       : h('p', { class: 'note', style: 'margin-bottom:12px' }, 'Noch keine Rückfragen.'));
     if (st.me.id && st.canWrite !== false) {
       const btn = h('button', { class: 'btn', type: 'button' }, 'Senden');
@@ -246,6 +261,13 @@ const RequestsView = (() => {
       const ok = await Store.updateRequest(r.id, { effortOverride: n }, 'Aufwandspunkte gespeichert.');
       if (ok != null) UI.clearDirty('adm-points');
     });
+    const ac = h('textarea', { id: 'adm-ac', rows: 3, placeholder: 'Ein Kriterium pro Zeile' }, r.acceptanceCriteria || '');
+    const acSave = h('button', { class: 'btn ghost small', type: 'button' }, 'Kriterien speichern');
+    acSave.addEventListener('click', async () => {
+      const ok = await Store.updateRequest(r.id, { acceptanceCriteria: document.getElementById('adm-ac').value.trim() }, 'Akzeptanzkriterien gespeichert.');
+      if (ok != null) UI.clearDirty('adm-ac');
+    });
+    sec.append(h('div', { style: 'margin-top:16px' }, UI.field('adm-ac', 'Akzeptanzkriterien', ac, 'Woran erkennt man, dass die Anforderung erfüllt ist? Vor der Bewertung erfassen.'), h('div', { class: 'row', style: 'margin-top:6px' }, acSave)));
     sec.append(h('div', { style: 'margin-top:16px' }, UI.field('adm-points', 'Aufwandspunkte für die Roadmap',
       h('div', { class: 'row' }, h('div', { style: 'flex:1 1 140px' }, inp), save),
       'Leer lassen, um den gerundeten Ø-Aufwand der Bewertungen zu verwenden.')));
