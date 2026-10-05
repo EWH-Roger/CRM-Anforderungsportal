@@ -5,29 +5,24 @@
   const subs = new Set();
   const clone = v => v === undefined ? undefined : JSON.parse(JSON.stringify(v));
   const segs = p => p.split('/').length;
-  const meta = { fromCache: false, hasPendingWrites: false };
+  const meta = { fromCache: false };
   const snapDoc = path => { const d = docs.get(path); return { id: path.split('/').pop(), exists: d !== undefined, data: () => clone(d), metadata: meta }; };
   function runQuery(q) {
-    let list = [...docs.keys()].filter(p => p.startsWith(q.path + '/') && segs(p) === segs(q.path) + 1).map(snapDoc);
-    for (const [f, op, v] of q.wheres) {
-      list = list.filter(d => { const x = d.data()[f];
-        return op === '==' ? x === v : op === '!=' ? x !== v : op === '<' ? x < v : op === '<=' ? x <= v : op === '>' ? x > v
-          : op === '>=' ? x >= v : op === 'in' ? v.includes(x) : op === 'array-contains' ? Array.isArray(x) && x.includes(v) : true; });
-    }
-    if (q.order) { const [f, dir] = q.order; list.sort((a, b) => { const x = a.data()[f], y = b.data()[f]; const c = x < y ? -1 : x > y ? 1 : 0; return dir === 'desc' ? -c : c; }); }
+    const list = [...docs.keys()].filter(p => p.startsWith(q.path + '/') && segs(p) === segs(q.path) + 1).map(snapDoc);
+    const f = q.order;
+    if (f) list.sort((a, b) => { const x = a.data()[f], y = b.data()[f]; return x < y ? -1 : x > y ? 1 : 0; });
     else list.sort((a, b) => (a.id < b.id ? -1 : 1));
-    if (q.lim) list = list.slice(0, q.lim);
-    return { docs: list, size: list.length, empty: !list.length, docChanges: () => [], metadata: meta };
+    return { docs: list, metadata: meta };
   }
   const deliver = s => s.fn(s.kind === 'doc' ? snapDoc(s.path) : runQuery(s.q));
   // ?slow=1: erst ein leerer Snapshot aus dem Cache, die echten Daten nach 1,5 s (wie auf der Plattform möglich).
   const slow = new URLSearchParams(location.search).has('slow');
-  const cacheMeta = { fromCache: true, hasPendingWrites: false };
+  const cacheMeta = { fromCache: true };
   const firstDelivery = s => {
     if (!slow) { setTimeout(() => deliver(s), 0); return; }
     setTimeout(() => s.fn(s.kind === 'doc'
       ? { id: s.path.split('/').pop(), exists: false, data: () => undefined, metadata: cacheMeta }
-      : { docs: [], size: 0, empty: true, docChanges: () => [], metadata: cacheMeta }), 0);
+      : { docs: [], metadata: cacheMeta }), 0);
     setTimeout(() => deliver(s), 1500);
   };
   function notify() { for (const s of subs) setTimeout(() => deliver(s), 0); }
@@ -56,15 +51,13 @@
   }
   function query(q) {
     return {
-      where: (f, op, v) => query({ ...q, wheres: [...q.wheres, [f, op, v]] }),
-      orderBy: (f, dir = 'asc') => query({ ...q, order: [f, dir] }),
-      limit: k => query({ ...q, lim: k }),
+      orderBy: f => query({ ...q, order: f }),
       get: async () => runQuery(q),
       onSnapshot: fn => { const s = { kind: 'col', q, fn }; subs.add(s); firstDelivery(s); return () => subs.delete(s); },
     };
   }
   function colRef(path) {
-    return { ...query({ path, wheres: [], order: null, lim: 0 }), path,
+    return { ...query({ path, order: null }), path,
       doc: id => docRef(path + '/' + (id || newId())),
       add: async d => { const r = docRef(path + '/' + newId()); await r.set(d); return r; } };
   }

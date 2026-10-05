@@ -80,6 +80,7 @@
   applyTheme(storedTheme);
 
   App.render = render; App.go = go;
+  App.open = id => { RequestsView.select(id); go('anforderungen'); };
   tab = fromHash();
   Store.subscribe(render);
   render();

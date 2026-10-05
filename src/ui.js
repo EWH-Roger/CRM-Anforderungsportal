@@ -1,5 +1,5 @@
 /* Gemeinsame Oberflächen-Helfer. */
-const App = { render() {}, go() {} };
+const App = { render() {}, go() {}, open() {} };
 
 const UI = (() => {
   function h(tag, attrs, ...children) {
