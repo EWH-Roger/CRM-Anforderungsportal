@@ -24,6 +24,7 @@ const SettingsView = (() => {
       isNew ? null : releasesPanel(st),
       isNew ? null : h('section', { class: 'panel' },
         h('h2', {}, 'Export'),
+        h('p', { class: 'note', style: 'margin-bottom:8px' }, cur.lastExportAt ? 'Letzter Export: ' + UI.fmtDateTime(cur.lastExportAt) : 'Letzter Export: noch keiner. Bitte regelmässig, mindestens monatlich, exportieren und die Dateien ablegen.'),
         h('p', { class: 'note' }, 'Speichert zwei CSV-Dateien: alle Anforderungen mit berechneten Werten und alle Bewertungen. Trennzeichen ist das Semikolon, damit Excel die Dateien direkt öffnet.'),
         h('div', { class: 'row', style: 'margin-top:12px' }, h('button', { class: 'btn ghost', type: 'button', onclick: () => Store.exportCsv() }, 'CSV exportieren')))));
   }
@@ -31,13 +32,14 @@ const SettingsView = (() => {
   function generalForm(base, isNew) {
     const num = (id, label, value, hint) => UI.field(id, label, h('input', { type: 'text', inputmode: 'decimal', id, value: String(value) }), hint);
     const list = (id, label, values, hint) => UI.field(id, label, h('textarea', { id, rows: 6 }, values.join('\n')), hint);
-    const ids = [...Logic.BENEFIT_KEYS.map(k => 'set-w-' + k), 'set-min', 'set-weeks', 'set-dep', 'set-crm', 'set-sys'];
+    const ids = [...Logic.BENEFIT_KEYS.map(k => 'set-w-' + k), 'set-min', 'set-weeks', 'set-reserve', 'set-dep', 'set-crm', 'set-sys'];
     const form = h('form', { class: 'panel', novalidate: true },
       h('h2', {}, 'Bewertung und Wertelisten'),
       h('div', { class: 'ratinggrid' }, ...Logic.BENEFIT_KEYS.map(k => num('set-w-' + k, 'Gewicht ' + Logic.CRITERIA_LABEL[k], base.weights[k] ?? 1, '0 bis 3, in Schritten von 0,5'))),
       h('div', { class: 'ratinggrid', style: 'margin-top:12px' },
         num('set-min', 'Mindestanzahl Bewertungen', base.minRatings, 'Ab dieser Anzahl gilt eine Anforderung als bewertet.'),
-        num('set-weeks', 'Arbeitswochen pro Jahr', base.weeksPerYear, 'Für die Berechnung des Einsparpotenzials.')),
+        num('set-weeks', 'Arbeitswochen pro Jahr', base.weeksPerYear, 'Für die Berechnung des Einsparpotenzials.'),
+        num('set-reserve', 'Reserve in % (Roadmap-Vorschlag)', base.reservePercent ?? 20, 'Anteil jeder Release-Kapazität, den der automatische Vorschlag frei lässt.')),
       h('div', { class: 'grid2', style: 'margin-top:12px' },
         list('set-dep', 'Abteilungen', base.departments, 'Ein Eintrag pro Zeile.'),
         list('set-crm', 'CRM-Bereiche', base.crmAreas, 'Ein Eintrag pro Zeile.'),
@@ -57,13 +59,15 @@ const SettingsView = (() => {
       if (!Number.isInteger(minRatings) || minRatings < 1) errs.push('Mindestanzahl Bewertungen: ganze Zahl ab 1.');
       const weeksPerYear = Logic.parseNum(val('set-weeks'));
       if (!Number.isFinite(weeksPerYear) || weeksPerYear < 1 || weeksPerYear > 52) errs.push('Arbeitswochen pro Jahr: Zahl zwischen 1 und 52.');
+      const reservePercent = Logic.parseNum(val('set-reserve'));
+      if (!Number.isInteger(reservePercent) || reservePercent < 0 || reservePercent > 50) errs.push('Reserve: ganze Zahl zwischen 0 und 50.');
       const departments = lines(val('set-dep')), crmAreas = lines(val('set-crm')), systems = lines(val('set-sys'));
       if (!departments.length) errs.push('Bitte mindestens eine Abteilung erfassen.');
       if (!crmAreas.length) errs.push('Bitte mindestens einen CRM-Bereich erfassen.');
       const err = document.getElementById('set-err');
       err.textContent = errs.join(' '); err.hidden = !errs.length;
       if (errs.length) return;
-      const ok = await Store.saveSettings({ ...base, weights, minRatings, weeksPerYear, departments, crmAreas, systems });
+      const ok = await Store.saveSettings({ ...base, weights, minRatings, weeksPerYear, reservePercent, departments, crmAreas, systems });
       if (ok != null) UI.clearDirty(...ids);
     });
     return form;

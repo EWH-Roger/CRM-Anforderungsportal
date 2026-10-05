@@ -6,6 +6,35 @@ Das Format folgt [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), die V
 
 ## [Unveröffentlicht]
 
+### Geändert
+- Build und Tests laufen unter Windows und macOS. `tests/env.sh` sucht Edge, Chrome oder Brave, ein anderer Browser lässt sich mit `BROWSER=...` vorgeben.
+- Kleinere Vereinfachungen im Code und im Test-Mock, ohne sichtbare Änderung im Portal.
+
+## [0.8.0] - 2026-10-03
+
+### Hinzugefügt
+- **Detailansicht:**
+  - Entscheidungsleiste unter dem Titel mit Status, Score, Einordnung und Einsparpotenzial.
+  - Kleine Nutzen/Aufwand-Matrix, die die Anforderung im Vergleich zu den anderen zeigt.
+- Glossar in der README.
+
+### Geändert
+- **Detailansicht:** Use Case, Pain, Gain, Akzeptanzkriterien und Systeme stehen in einer Box statt in vielen.
+- Labels stehen in normaler Schreibweise statt in Grossbuchstaben.
+- Angaben sind klar getrennt statt mit Mittelpunkten verkettet.
+- Die Matrix verwendet dieselben Bezeichnungen wie die übrigen Ansichten.
+
+### Behoben
+- Rahmen von Eingabefeldern haben in beiden Modi mindestens 3:1 Kontrast (WCAG 1.4.11). Linien und Tabellen bleiben hellblau.
+
+## [0.7.0] - 2026-10-03
+
+### Hinzugefügt
+- **Akzeptanzkriterien:** Der Product Owner erfasst sie im Detail vor der Bewertung, eine Zeile pro Kriterium. Sie werden als Checkliste angezeigt und im CSV-Export mitgeführt.
+- **Uneinigkeit im Release Board:** Liegen die Bewertungen eines Kriteriums 3 oder mehr Punkte auseinander, erscheint ein Hinweis, die Anforderung vor der Einplanung zu besprechen.
+- **Reserve in der Roadmap:** Neue Einstellung «Reserve in %», Standard 20 %. Der automatische Vorschlag lässt diesen Anteil jeder Release-Kapazität frei.
+- **Datensicherung:** Das Portal merkt sich den letzten CSV-Export und zeigt ihn in den Einstellungen an. Der Product Owner erhält einen Hinweis, wenn noch nie oder seit über 30 Tagen nicht exportiert wurde.
+
 ## [0.6.0] - 2026-10-03
 
 ### Hinzugefügt
@@ -109,7 +138,9 @@ Erste Version für den Pilot, veröffentlicht als privates claude.ai-Artifact.
 - Eine Anforderung liess sich bearbeiten, nachdem sie bereits in Bewertung war. Statuswechsel mit veraltetem Stand konnten Einträge im Verlauf verlieren.
 - Lesende und nicht angemeldete Personen konnten Formularfelder ausfüllen.
 
-[Unveröffentlicht]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.6.0...HEAD
+[Unveröffentlicht]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.7.0...v0.8.0
+[0.7.0]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/EWH-Roger/CRM-Anforderungsportal/compare/v0.3.1...v0.4.0

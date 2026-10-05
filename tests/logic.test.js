@@ -231,3 +231,25 @@ test('Hinweise: eigene Aktionen und Ereignisse vor dem letzten Besuch zählen ni
   eq(notes({ meId: 'po', isAdmin: true, since: 't9' }), []);
   eq(notes({ meId: 'sub', isAdmin: true }).filter(n => n.requestId === 'a' || n.requestId === 'd'), []);
 });
+
+// ---- Reserve, Uneinigkeit, Datensicherung ----
+test('suggestRoadmap mit Reserve plant nur den Rest der Kapazität ein', () => {
+  const backlog = [{ id: 'a', number: 1, score: 3, points: 8 }, { id: 'b', number: 2, score: 2, points: 2 }];
+  const releases = [{ id: 'r', order: 1, capacity: 10, status: 'offen', used: 0 }];
+  eq(Logic.suggestRoadmap(backlog, releases, 20), [{ requestId: 'a', releaseId: 'r' }]);
+  eq(Logic.suggestRoadmap(backlog, releases), [{ requestId: 'a', releaseId: 'r' }, { requestId: 'b', releaseId: 'r' }], 'ohne Reserve:');
+});
+test('disagreement meldet Kriterien mit 3 oder mehr Punkten Abstand', () => {
+  eq(Logic.disagreement({ a: RT(5, 3, 3, 3, 1), b: RT(2, 3, 4, 3, 4) }), ['nutzen', 'aufwand']);
+  eq(Logic.disagreement({ a: RT(5, 3, 3, 3, 1) }), []);
+  eq(Logic.disagreement({}), []);
+});
+test('backupDue: nie exportiert oder älter als 30 Tage', () => {
+  const now = '2026-10-31T12:00:00.000Z';
+  ok(Logic.backupDue(null, now)); ok(Logic.backupDue('2026-09-30T11:00:00.000Z', now));
+  ok(!Logic.backupDue('2026-10-02T12:00:00.000Z', now));
+});
+test('acceptanceList: eine Zeile pro Kriterium, leere Zeilen weg', () => {
+  eq(Logic.acceptanceList('Offerte im CRM sichtbar\n\n  Preise aus Preisliste  \n'), ['Offerte im CRM sichtbar', 'Preise aus Preisliste']);
+  eq(Logic.acceptanceList(undefined), []);
+});

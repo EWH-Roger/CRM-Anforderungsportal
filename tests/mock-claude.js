@@ -79,7 +79,7 @@
     const t = d => new Date(Date.UTC(2026, 8, d, 9)).toISOString();
     const hist = (...steps) => steps.map(([status, d, by]) => ({ status, at: t(d), by, comment: '' }));
     docs.set('config/settings', { committee: ['u_admin', 'u_gremium'], weights: { nutzen: 1, betroffene: 1, dringlichkeit: 1, fit: 1 },
-      minRatings: 2, weeksPerYear: 46, departments: ['Verkauf', 'Kundendienst', 'Marketing'],
+      minRatings: 2, weeksPerYear: 46, reservePercent: 0, lastExportAt: new Date().toISOString(), departments: ['Verkauf', 'Kundendienst', 'Marketing'],
       crmAreas: ['Kontakte und Firmen', 'Verträge', 'Kampagnen', 'Reporting'], systems: ['Excel', 'Outlook', 'Access-Datenbank Anlässe'] });
     docs.set('releases/r1', { name: '2027.1', order: 1, capacity: 6, status: 'offen' });
     docs.set('releases/r2', { name: '2027.2', order: 2, capacity: 6, status: 'offen' });

@@ -1,6 +1,6 @@
 # Übergabe CRM-Anforderungsportal
 
-Stand: 03.10.2026, Version 0.6.0
+Stand: 05.10.2026, Version 0.8.0
 
 Dieses Dokument ist für alle, die das Portal betreuen oder weiterentwickeln, auch für eine neue Claude-Sitzung. Es fasst zusammen, wo alles liegt, was der aktuelle Stand ist und was als Nächstes ansteht. Die fachliche Beschreibung steht in der [README](README.md), die Änderungen pro Version im [Changelog](CHANGELOG.md).
 
@@ -14,7 +14,7 @@ Das Business reicht über das Portal Anforderungen und Use Cases für Erweiterun
 |---|---|
 | Portal (live) | https://claude.ai/artifact/NH6CUUyfzvpvFoPEotaQmE |
 | Quellcode | https://github.com/EWH-Roger/CRM-Anforderungsportal |
-| Lokale Arbeitskopie | `D:\Projekte\Form` |
+| Lokale Arbeitskopie | Windows: `D:\Projekte\Form`, macOS: `~/Documents/GitHub/CRM-Anforderungsportal` |
 | Spezifikation | [docs/superpowers/specs/2026-10-02-anforderungsportal-design.md](docs/superpowers/specs/2026-10-02-anforderungsportal-design.md) |
 | Umsetzungsplan | [docs/superpowers/plans/2026-10-02-anforderungsportal.md](docs/superpowers/plans/2026-10-02-anforderungsportal.md) |
 | Fachliche Beschreibung, Entwicklung | [README.md](README.md) |
@@ -24,7 +24,7 @@ Das Artifact gehört dem claude.ai-Konto von Roger Oettli. Veröffentlichen, fre
 
 ## 3. Aktueller Stand
 
-- **Live:** Version 0.6.0, auf claude.ai Version 8 des Artifacts. Die laufende Version steht in der Fusszeile des Portals.
+- **Live:** Version 0.8.0, auf claude.ai Version 10 des Artifacts. Die laufende Version steht in der Fusszeile des Portals.
 - **Freigabe:** Das Artifact ist privat. Ausser dem Owner kann es niemand öffnen, bis es über «Teilen» freigegeben wird.
 - **Daten (geprüft am 02.10.2026):**
   - Die Einstellungen sind gespeichert, mit eigenen Abteilungen (u. a. Telekom, Energie, Fernwärme, Gas, Elektrizität) und Systemen (u. a. Innosolv, Hubspot, Freshdesk).
@@ -32,9 +32,10 @@ Das Artifact gehört dem claude.ai-Konto von Roger Oettli. Veröffentlichen, fre
   - Es gibt eine Anforderung, #1 «Telekom ist cool». Das ist ein Testeintrag.
   - Testdaten aus der Entwicklung sind keine in der Datenbank.
 - **Git:**
-  - Die Versionen 0.4.0 bis 0.6.0 liegen auf `feature/anforderungsportal` und kommen mit Pull Request #4 nach `main`. Bis 0.3.1 ist `main` aktuell (Pull Requests #1 bis #3).
-  - Für jede Version gibt es ein Tag (`v0.1.0` bis `v0.6.0`).
-- **Tests:** Alle grün, Stand 0.6.0: 44 Logik-Tests, 4 UI-Tests und 40 Klicktestläufe.
+  - `main` enthält alle Versionen bis 0.8.0. Die Versionen 0.7.0 und 0.8.0 kamen nachträglich von `feature/anforderungsportal` nach `main`, weil Pull Request #4 nur bis 0.6.0 reichte. Neue Arbeiten zweigen von `main` ab.
+  - Seit 0.8.0 sind nur Entwicklungswerkzeuge geändert (Pull Requests #5 bis #7): Build und Tests laufen unter Windows und macOS, dazu kleinere Vereinfachungen im Code ohne sichtbare Änderung. Das Artifact muss dafür nicht neu veröffentlicht werden.
+  - Für jede Version gibt es ein Tag (`v0.1.0` bis `v0.8.0`).
+- **Tests:** Alle grün unter macOS (05.10.2026, mit Brave): 48 Logik-Tests, 4 UI-Tests und 42 Klicktestläufe. Unter Windows seit der Umstellung auf beide Systeme noch nicht ausgeführt. Begriffe: siehe Glossar in der README.
 
 ## 4. Rollen im Portal
 
@@ -52,9 +53,9 @@ Gearbeitet wird abwechselnd unter Windows und macOS. Die Skripte laufen auf beid
 - Bash (Windows: Git Bash, macOS: Terminal)
 - Node.js 24
 - Microsoft Edge, Google Chrome oder Brave, gesucht in `tests/env.sh`
-- GitHub-CLI `gh` für Pull Requests
+- GitHub Desktop oder die GitHub-CLI `gh` für Push und Pull Requests. Die Anmeldung von GitHub Desktop gilt nicht für Git im Terminal. Soll Claude Code selbst pushen, braucht es `gh` mit `gh auth login`.
 
-Zusätzliche npm-Pakete braucht es nicht. Wurde Node.js erst nach dem Start einer Shell installiert, findet die Shell `node` noch nicht. Die Testskripte weichen dann auf `C:\Program Files\nodejs\node.exe` aus.
+Zusätzliche npm-Pakete braucht es nicht. VS Code schlägt beim Öffnen des Ordners die empfohlenen Erweiterungen vor (`.vscode/extensions.json`). Wurde Node.js erst nach dem Start einer Shell installiert, findet die Shell `node` noch nicht. Die Testskripte weichen dann auf `C:\Program Files\nodejs\node.exe` aus.
 
 ### Ablauf für eine Änderung
 1. Auf einem Branch arbeiten, Code in `src/` ändern.
@@ -81,18 +82,25 @@ Zusätzliche npm-Pakete braucht es nicht. Wurde Node.js erst nach dem Start eine
 - In der Datenbank werden nur Benutzer-IDs gespeichert. Namen werden beim Anzeigen aufgelöst.
 - Die Datenbankregeln werden beim Veröffentlichen mitgegeben und beim Neuveröffentlichen übernommen. Sie stehen in der README unter «Datenmodell».
 
+### Datensicherung (Routine)
+- Mindestens monatlich unter «Einstellungen» → «CSV exportieren» und die zwei Dateien gesichert ablegen, etwa auf SharePoint.
+- Das Portal zeigt den letzten Export an und erinnert den Product Owner nach 30 Tagen.
+- Bis zum ersten Export erscheint der Hinweis sofort.
+
 ## 6. Wichtige Entscheide
 
 - **Plattform:** ein Pilot als claude.ai-Artifact statt Microsoft 365 oder einer eigenen Webanwendung. Das ging schnell und ohne Betriebsaufwand, setzt aber ein claude.ai-Konto bei allen Beteiligten voraus.
 - **Bewertung:** Nutzen/Aufwand-Matrix mit fünf Kriterien, 1 bis 5. Score = gewichteter Nutzen-Index ÷ Ø Aufwand.
 - **Release Board:** Mehrere Personen bewerten, das Portal bildet den Durchschnitt. Es zählen nur aktuelle Mitglieder. Die Bewertung ist blind: Ein Mitglied sieht die Ergebnisse erst nach der eigenen Bewertung.
-- **Roadmap:** nach Releases mit Kapazität in Aufwandspunkten, mit automatischem Vorschlag nach Score.
+- **Roadmap:** nach Releases mit Kapazität in Aufwandspunkten, mit automatischem Vorschlag nach Score. Der Vorschlag lässt eine Reserve frei, standardmässig 20 %.
+- **Akzeptanzkriterien und Uneinigkeit (ab 0.7.0):** Der Product Owner erfasst Akzeptanzkriterien vor der Bewertung. Liegen Bewertungen 3 oder mehr Punkte auseinander, wird die Anforderung zur Besprechung markiert.
 - **Bewusst nicht im Pilot:**
   - KI-Qualitätscheck der Einreichung
   - Datei-Anhänge (stattdessen Links)
   - Benachrichtigungen
   - serverseitige Rollen- und Statusprüfung
   - Anbindung an das CRM
+- **Zielgeräte:** Das Portal wird am Computer genutzt. Smartphone ist kein Ziel (Entscheid vom 03.10.2026). Auf schmalen Bildschirmen bleibt es bedienbar, Tabellen scrollen dort seitlich. Eine eigene mobile Darstellung, etwa die Liste als Karten, ist bewusst nicht vorgesehen.
 - **Begriffe:** Seit Version 0.2.1 heissen die Rollen «Release Board» und «Product Owner». Die Spezifikation in `docs/` verwendet noch die alten Begriffe «Gremium» und «Administration». Sie ist als Dokument des ursprünglichen Entwurfs unverändert geblieben.
 
 ## 7. Offene Punkte
@@ -102,6 +110,7 @@ Zusätzliche npm-Pakete braucht es nicht. Wurde Node.js erst nach dem Start eine
 2. **Release Board einrichten:** Unter «Einstellungen» die Mitglieder und das erste Release mit seiner Kapazität erfassen. **Achtung:** Heute hat das Release Board 1 Mitglied bei einer Mindestanzahl von 3 Bewertungen. Solange es weniger Mitglieder als die Mindestanzahl gibt, erreicht keine Anforderung den Status «Bewertet». Entweder Mitglieder ergänzen oder die Mindestanzahl senken.
 3. **Wertelisten prüfen:** Abteilungen, CRM-Bereiche und Systeme stammen teilweise aus Vorschlägen und sollten zur EW Höfe AG passen.
 4. **Testeinträge entfernen:** Vor dem Start des Pilots die Anforderung #1 «Telekom ist cool» und andere Probeeinträge löschen. Im Portal selbst geht das derzeit nicht, nur direkt in der Datenbank des Artifacts, zum Beispiel über Claude Code. Danach beginnt die Laufnummer wieder bei 1.
+5. **Tests unter Windows:** Einmal `bash tests/run.sh` und `bash tests/e2e-all.sh` auf dem PC ausführen. Seit Build und Tests auch unter macOS laufen, ist das unter Windows noch nicht geprüft.
 
 ### Bekannte Einschränkungen des Pilots
 - Rollen und Statuswechsel sichert nur die Oberfläche. Technisch kann jeder Contributor Anforderungen direkt in der Datenbank ändern.
@@ -142,4 +151,6 @@ Zusätzliche npm-Pakete braucht es nicht. Wurde Node.js erst nach dem Start eine
 | «Speichern nicht möglich …» | Die Freigabe reicht nicht für diese Aktion, etwa Einstellungen ohne Owner oder Editor. Freigabe prüfen. |
 | Release Board sieht keine Ergebnisse | So gewollt, solange das Mitglied nicht selbst bewertet hat (Blindbewertung). |
 | Anforderung bleibt «In Bewertung» | Der Product Owner kann sie im Detail mit «Als bewertet markieren» abschliessen, sobald die Mindestanzahl Bewertungen erreicht ist. |
-| Tests finden `node` nicht | Shell neu starten oder Node.js unter `C:\Program Files\nodejs\` installieren. |
+| Tests finden `node` nicht | Shell neu starten oder Node.js installieren (Windows: `C:\Program Files\nodejs\`). |
+| «Kein Browser gefunden» | Edge, Chrome oder Brave installieren oder den Pfad vorgeben: `BROWSER="/pfad/zum/browser" bash tests/run.sh`. Gesucht wird in `tests/env.sh`. |
+| `git push` im Terminal: «could not read Username» | Git im Terminal hat keine Anmeldung. Über GitHub Desktop pushen oder `gh auth login` ausführen. |

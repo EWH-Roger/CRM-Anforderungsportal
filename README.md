@@ -50,6 +50,24 @@ Die ersten vier sind Nutzen-Kriterien. Daraus berechnet das Portal:
 
 Es zählen nur Bewertungen von aktuellen Mitgliedern des Release Boards. Ein Mitglied sieht die Bewertungen der anderen erst, nachdem es selbst bewertet hat.
 
+## Glossar
+
+Diese Begriffe gelten einheitlich in Oberfläche, Export und Dokumentation.
+
+| Begriff | Bedeutung |
+|---|---|
+| Product Owner | verantwortet Prüfung, Status und Roadmap (Freigabe Owner oder Editor) |
+| Release Board | Personen, die Anforderungen bewerten |
+| Einreichende | Personen aus dem Business, die Anforderungen erfassen |
+| Nutzen-Index | gewichteter Durchschnitt der vier Nutzen-Kriterien, 1 bis 5 |
+| Score | Nutzen-Index ÷ Ø Aufwand; höher heisst lohnender |
+| Einordnung | Feld der Nutzen/Aufwand-Matrix: Quick Win, Grosses Vorhaben, Lückenfüller oder Vermeiden |
+| Aufwandspunkte | Grösse einer Anforderung für die Roadmap, standardmässig der gerundete Ø Aufwand |
+| Backlog | bewertete, noch nicht eingeplante Anforderungen |
+| Release | geplante Auslieferung mit Kapazität in Aufwandspunkten |
+| Reserve | Anteil der Kapazität, den der automatische Vorschlag frei lässt |
+| Akzeptanzkriterien | Bedingungen, an denen man erkennt, dass eine Anforderung erfüllt ist |
+
 ## Projektstruktur
 
 ```
@@ -115,6 +133,10 @@ Die Seite darf nur Skripte von den CDNs laden, die claude.ai erlaubt, und Styles
 | `requests/{id}` | Anforderung mit Statusverlauf und Release-Zuordnung | ab Contributor |
 | `requests/{id}/comments/{id}` | Rückfragen und Antworten | ab Contributor |
 | `ratings/{benutzer}` | alle Bewertungen einer Person | nur die Person selbst |
+
+## Datensicherung
+
+Die Datenbank des Artifacts ist der einzige Speicherort der Daten. Der Product Owner exportiert deshalb mindestens monatlich unter «Einstellungen» → «CSV exportieren» und legt die beiden Dateien an einem gesicherten Ort ab, etwa auf SharePoint. Ist der letzte Export älter als 30 Tage, weist das Portal den Product Owner darauf hin.
 
 ## Bekannte Einschränkungen (Pilot)
 

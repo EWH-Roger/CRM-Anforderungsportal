@@ -2,7 +2,7 @@
 const Store = (() => {
   const DEFAULT_SETTINGS = {
     committee: [], weights: { nutzen: 1, betroffene: 1, dringlichkeit: 1, fit: 1 },
-    minRatings: 3, weeksPerYear: 46, departments: [], crmAreas: [], systems: [],
+    minRatings: 3, weeksPerYear: 46, reservePercent: 20, lastExportAt: null, departments: [], crmAreas: [], systems: [],
   };
   const state = {
     ready: false, db: null, user: null, downloads: null, me: { id: null, name: '' }, isAdmin: false, canWrite: null,
@@ -204,7 +204,7 @@ const Store = (() => {
       const ev = evaluation(r), p = r.pain || {}, g = r.gain || {}, sy = r.systems || {};
       return {
         number: r.number, title: r.title, status: Logic.STATUS_LABEL[r.status], department: r.department, crmArea: r.crmArea,
-        useCase: r.useCase, situation: p.situation, frequency: p.frequency, hours: p.hoursPerWeek, persons: p.persons,
+        useCase: r.useCase, acceptance: Logic.acceptanceList(r.acceptanceCriteria).join(' | '), situation: p.situation, frequency: p.frequency, hours: p.hoursPerWeek, persons: p.persons,
         consequences: (p.consequences || []).join(', '), gainDepartment: g.department, gainCompany: g.company,
         success: g.successCriterion, deadline: g.deadline, deadlineReason: g.deadlineReason,
         affected: (sy.affected || []).join(', '),
@@ -217,7 +217,7 @@ const Store = (() => {
     });
     const cols = [
       ['number', 'Nr.'], ['title', 'Titel'], ['status', 'Status'], ['department', 'Abteilung'], ['crmArea', 'CRM-Bereich'],
-      ['useCase', 'Use Case'], ['situation', 'Heutige Situation'], ['frequency', 'Häufigkeit'], ['hours', 'h pro Woche und Person'],
+      ['useCase', 'Use Case'], ['acceptance', 'Akzeptanzkriterien'], ['situation', 'Heutige Situation'], ['frequency', 'Häufigkeit'], ['hours', 'h pro Woche und Person'],
       ['persons', 'Betroffene Personen'], ['consequences', 'Folgen'], ['gainDepartment', 'Nutzen Abteilung'],
       ['gainCompany', 'Nutzen Unternehmen'], ['success', 'Erfolgskriterium'], ['deadline', 'Frist'], ['deadlineReason', 'Grund Frist'],
       ['affected', 'Betroffene Systeme'], ['replaceable', 'Ablösbare Systeme'], ['links', 'Links'], ['savings', 'Einsparpotenzial h/Jahr'],
@@ -250,6 +250,8 @@ const Store = (() => {
         return;
       }
     }
+    // Zeitpunkt der letzten Datensicherung merken (für den Hinweis an den Product Owner).
+    await write(() => state.db.doc('config/settings').update({ lastExportAt: now() }));
   }
 
   return {
