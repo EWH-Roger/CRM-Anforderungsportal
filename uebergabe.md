@@ -48,9 +48,10 @@ Das Artifact gehört dem claude.ai-Konto von Roger Oettli. Veröffentlichen, fre
 ## 5. Arbeitsweise
 
 ### Voraussetzungen
-- Git Bash
+Gearbeitet wird abwechselnd unter Windows und macOS. Die Skripte laufen auf beiden Systemen.
+- Bash (Windows: Git Bash, macOS: Terminal)
 - Node.js 24
-- Microsoft Edge
+- Microsoft Edge oder Google Chrome, gesucht in `tests/env.sh`
 - GitHub-CLI `gh` für Pull Requests
 
 Zusätzliche npm-Pakete braucht es nicht. Wurde Node.js erst nach dem Start einer Shell installiert, findet die Shell `node` noch nicht. Die Testskripte weichen dann auf `C:\Program Files\nodejs\node.exe` aus.
